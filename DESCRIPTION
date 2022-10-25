@@ -1,0 +1,37 @@
+Package: modelfitter
+Title: Bootstrapping models and model fits
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Robert",
+           family = "Challen",
+           role = c("aut", "cre"),
+           email = "rob.challen@bristol.ac.uk",
+           comment = c(ORCID = "0000-0002-5504-7768"))
+Description: This is a very early work in progress.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.1
+Imports: 
+    dplyr,
+    emmeans,
+    geepack,
+    lmtest,
+    logbin,
+    magrittr,
+    rlang,
+    stats,
+    broom,
+    car,
+    mice,
+    performance,
+    purrr,
+    sandwich,
+    scales,
+    stringr,
+    tibble,
+    tidyr,
+    tidyselect
+Suggests: 
+    tidyverse
+URL: https://github.com/bristol-vaccine-centre/modelfitter
