@@ -5,5 +5,7 @@ utils::globalVariables(c(
 "name","p.component","p.value","p.value.mixture","predictor","predictor.int",
 "predictors","readable_label_mapping","row_number","statistic",
 "statistic.mixture","std.error","subgroup","subgroup.int","subgroup_order",
-"subgroup_order.int","term","term.int","type","type.int","value","where",":="
+"subgroup_order.int","term","term.int","type","type.int","value","where",":=",
+".facet",".o",".o2",".order","beta.lower","beta.median","beta.upper","g","label",
+"label_x","p.flag", "path", "x", "xmax", "xmin", "y"
 ))

@@ -4,12 +4,14 @@
 \alias{impute_data}
 \title{Take a list of predictors and impute data for those predictors}
 \usage{
-impute_data(rawData, predictorVars)
+impute_data(rawData, ...)
 }
 \arguments{
 \item{rawData}{a raw data frame of observations}
 
-\item{predictorVars}{a lit of columns that we are using}
+\item{...}{the columns that we are using as predictors, as a
+list of formulae (rhs), a tidyselect call, a dplyr::vars() specification or a
+list of characters}
 }
 \value{
 a mice object containing imputed data

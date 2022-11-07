@@ -4,12 +4,14 @@
 \alias{combine_boots}
 \title{Combine bootstraps}
 \usage{
-combine_boots(boots, predictorVars)
+combine_boots(boots, ...)
 }
 \arguments{
 \item{boots}{a bootstrapped model output}
 
-\item{predictorVars}{all the variables used in all the models.}
+\item{...}{the columns that we are using as predictors, as a
+list of formulae (rhs), a tidyselect call, a dplyr::vars() specification or a
+list of characters}
 }
 \value{
 a collapsed summary of all bootstraps

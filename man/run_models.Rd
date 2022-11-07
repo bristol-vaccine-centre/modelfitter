@@ -7,9 +7,9 @@
 run_models(imputedData, modelConfig, modelFunction = logistic_regression, ...)
 }
 \arguments{
-\item{imputedData}{a mice imputed data}
+\item{imputedData}{a mice imputed data source}
 
-\item{modelConfig}{a dataframe with column \code{form} continaing formulae to test, with other columns containing metsdata}
+\item{modelConfig}{a dataframe with column \code{form} containing formulae to test, with other columns containing any other metadata}
 
 \item{modelFunction}{the type of test as a function call. the function must accept \code{data} and \code{formula} inputs}
 

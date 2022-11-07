@@ -15,6 +15,7 @@ RoxygenNote: 7.2.1
 Imports: 
     dplyr,
     emmeans,
+    ggplot2,
     geepack,
     lmtest,
     logbin,
@@ -31,7 +32,14 @@ Imports:
     stringr,
     tibble,
     tidyr,
-    tidyselect
+    tidyselect,
+    digest,
+    fs,
+    utils,
+    patchwork,
+    ggstance,
+    huxtable,
+    systemfonts
 Suggests: 
     tidyverse
 URL: https://github.com/bristol-vaccine-centre/modelfitter

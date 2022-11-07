@@ -14,6 +14,10 @@ NULL
 #' @return a model object
 #' @export
 logistic_regression = function(data, formula) {
+  outcome = rlang::f_lhs(formula)
+  if (!data %>% dplyr::pull(!!outcome) %>% is.logical()) {
+    data = data %>% dplyr::mutate(!!outcome := tolower(!!outcome) %in% c("yes","true","present"))
+  } 
   stats::glm(formula = formula, family = stats::binomial(), data = data)
 }
 
@@ -33,7 +37,7 @@ log_binomial = function(data, formula) {
     frac = sum(data %>% dplyr::pull(!!outcome) %>% as.numeric() != 1)/nrow(data) # 1 is positive outcome
   }
   terms = # length(all.vars(rlang::f_rhs(formula)))
-    suppressWarnings(length(stats::coefficients(lm(formula,data))))
+    suppressWarnings(length(stats::coefficients(stats::lm(formula,data))))
   suppressWarnings(stats::glm(formula = formula, data = data, family=stats::binomial(link="log"), start=c(log(frac),rep(1e-4,terms-1)),
                        maxit = 1000
   ))
@@ -55,7 +59,7 @@ log_binomial_2 = function(data, formula) {
     frac = sum(data %>% dplyr::pull(!!outcome) %>% as.numeric() != 1)/nrow(data) # 1 is positive outcome
   }
   terms = # length(all.vars(rlang::f_rhs(formula)))
-    suppressWarnings(length(stats::coefficients(lm(formula,data))))
+    suppressWarnings(length(stats::coefficients(stats::lm(formula,data))))
   starts = c(log(frac),rep(1e-4,terms-1))
   # starts = log(c(frac,rep(1e-4,terms-1)))
   logbin::logbin(formula = formula, data = data, start=starts,
@@ -137,25 +141,30 @@ robust_poisson_2 = function(data, formula) {
 #' Take a list of predictors and impute data for those predictors
 #'
 #' @param rawData a raw data frame of observations
-#' @param predictorVars a lit of columns that we are using
+#' @param ... the columns that we are using as predictors, as a 
+#'   list of formulae (rhs), a tidyselect call, a dplyr::vars() specification or a
+#'   list of characters
 #'
 #' @return a mice object containing imputed data
 #' @export
-impute_data = function(rawData, predictorVars) {
-  imputeFrom = rawData %>% dplyr::select(c(where(is.numeric),where(is.factor))) %>% colnames()
-  # Configure mice imputation columns
-  init = mice::mice(rawData, maxit=0)
-  meth = init$method
-  predM = init$predictorMatrix
-  predictorNames = sapply(predictorVars, as_label)
-  # only impute values in the model:
-  meth[!(names(meth) %in% predictorNames)] = ""
-  # don't use for imputation
-  # predM[!(names(meth) %in% predictorNames)] = 0
-  # only use factors and numerics for imputation
-  predM[!(names(meth) %in% imputeFrom)] = 0
-  set.seed(103)
-  imputeModel = mice::mice(rawData, method=meth, predictorMatrix=predM, m=10,maxit = 5,printFlag=FALSE)
+impute_data = function(rawData, ...) {
+  predictorVars = .parse_unique(rawData, ..., .side="rhs") %>% .sort_symbols()
+  imputeModel = .cached({
+    imputeFrom = rawData %>% dplyr::select(c(tidyselect::where(is.numeric),tidyselect::where(is.factor),tidyselect::where(is.logical))) %>% colnames()
+    # Configure mice imputation columns
+    init = mice::mice(rawData, maxit=0)
+    meth = init$method
+    predM = init$predictorMatrix
+    predictorNames = sapply(predictorVars, as_label)
+    # only impute values in the model:
+    meth[!(names(meth) %in% predictorNames)] = ""
+    # don't use for imputation
+    # predM[!(names(meth) %in% predictorNames)] = 0
+    # only use factors and numerics for imputation
+    predM[!(names(meth) %in% imputeFrom)] = 0
+    set.seed(103)
+    return(mice::mice(rawData, method=meth, predictorMatrix=predM, m=10,maxit = 5,printFlag=FALSE))
+  }, rawData, predictorVars, ...)
   return(imputeModel)
 }
 
@@ -163,18 +172,23 @@ impute_data = function(rawData, predictorVars) {
 
 #' Predict the potential coefficient names for a model output 
 #' 
-#' @param rawData the data the model will be fitted to 
-#' @param predictorVars the parameters of the model.
+#' @inheritParams impute_data
+#' @param label_fn a function that converts column names into readable labels
 #'
 #' @return a dataframe with the likely names of the coefficients
 #' @export
-format_summary_rows = function(rawData, predictorVars) {
-  if (is.character(predictorVars)) {
-    predictorVars = lapply(predictorVars,as.symbol)
-  }
+format_summary_rows = function(rawData, ..., label_fn = ~ .x) {
+  
+  predictorVars = .parse_unique(rawData, ..., .side="rhs")
+  predictorNames = sapply(predictorVars, as_label)
+  label_fn = getOption("tableone.labeller",label_fn)
+  label_fn = purrr::as_mapper(label_fn)
+  
   # Get the labels as a dataframe, and ensure the ordering of factors is preserved
-  predictorList = readable_label_mapping(predictorVars) %>% unname()
+  predictorList = label_fn(predictorNames) %>% unname()
   predictorKeys = sapply(predictorVars,as_label)
+  # TODO: look at this as maybe ordering can be done using character rather than
+  # factor level
   levelList = predictorVars %>% lapply(function(.x) try(rawData %>% dplyr::pull(!!.x) %>% levels())) %>% unlist() %>% unname() %>% unique(fromLast=TRUE)
   keys = tibble::tibble(predictor = predictorKeys) %>%
     dplyr::mutate(
@@ -208,7 +222,7 @@ format_summary_rows = function(rawData, predictorVars) {
       subgroup = paste0(ifelse(is.na(subgroup),type,subgroup)," AND ",ifelse(is.na(subgroup.int),type.int,subgroup.int)),
       group = paste0(group," AND ",group.int),
       term = paste0(term,":",term.int)
-    ) %>% dplyr::select(-ends_with(".int"))
+    ) %>% dplyr::select(-tidyselect::ends_with(".int"))
 
   keyAndInt = keys %>% dplyr::bind_rows(inter) %>% dplyr::arrange(group_order,subgroup_order)
   predictorList = unique(keyAndInt$group)
@@ -227,8 +241,8 @@ format_summary_rows = function(rawData, predictorVars) {
 
 #' Run a set of models 
 #'
-#' @param imputedData a mice imputed data
-#' @param modelConfig a dataframe with column `form` continaing formulae to test, with other columns containing metsdata
+#' @param imputedData a mice imputed data source
+#' @param modelConfig a dataframe with column `form` containing formulae to test, with other columns containing any other metadata
 #' @param modelFunction the type of test as a function call. the function must accept `data` and `formula` inputs
 #' @param ... not used
 #'
@@ -297,12 +311,13 @@ oob_or = function(x, limit = 50) {
 #' Combine bootstraps 
 #'
 #' @param boots a bootstrapped model output
-#' @param predictorVars all the variables used in all the models.
+#' @inheritParams impute_data
 #'
 #' @return a collapsed summary of all bootstraps
 #' @export
-combine_boots = function(boots, predictorVars) {
-  keys = format_summary_rows(boots$impute[[1]], predictorVars)
+combine_boots = function(boots, ...) {
+  predictorVars = .parse_unique(boots$impute[[1]], ..., .side="rhs")
+  keys = format_summary_rows(boots$impute[[1]], ...)
   pooled.HR = boots %>% tidyr::unnest(model.coef) %>% dplyr::group_by(modelName, term) %>% dplyr::summarise(
     statistic.mixture = sprintf_list("%1.2f [%1.2f\u2013%1.2f]", oob_or(exp(qmixnorm(p=c(0.5,0.025,0.975), means=estimate, sds=std.error)))),
     beta.lower = qmixnorm(p=0.025, means=estimate, sds=std.error),
@@ -319,7 +334,12 @@ combine_boots = function(boots, predictorVars) {
     )
 
   out = keys %>% tidyr::crossing(boots %>% dplyr::select(modelName) %>% dplyr::distinct()) %>% dplyr::left_join(pooled.HR, by=c("term","modelName")) %>% dplyr::left_join(pooled.global.p, by=c("predictor","modelName")) %>%
-    dplyr::select(modelName,group,subgroup,statistic = statistic.mixture, p.value = global.p.mixture, p.component = p.value.mixture, type, tidyselect::starts_with("beta")) %>%
+    dplyr::select(modelName,group,subgroup,
+                  statistic = statistic.mixture, 
+                  p.value = global.p.mixture, 
+                  p.component = p.value.mixture, 
+                  type, 
+                  tidyselect::starts_with("beta")) %>%
     dplyr::group_by(modelName,group) %>%
     dplyr::filter(type!="interaction" | !is.na(statistic)) %>%
     dplyr::mutate(
@@ -327,8 +347,8 @@ combine_boots = function(boots, predictorVars) {
         sum(!is.na(statistic))==0 ~ "\u2014",
         is.na(statistic) ~ "ref",
         TRUE ~ statistic
-      ),
-      p.value = dplyr::if_else(row_number() == 1, p.value,NA_character_)
+      )#,
+      #p.value = dplyr::if_else(dplyr::row_number() == 1, p.value,NA_character_)
     )
 }
 
@@ -338,8 +358,9 @@ combine_boots = function(boots, predictorVars) {
 #' Printable output of model combined
 #'
 #' @param boots a bootstrapped model output
-#' @param predictorVars all the variables used in all the models.
+#' @inheritParams impute_data
 #' @param statistic was this an OR or an RR (or a HR) just used for labelling
+#' @param global.p present the global p value (anova) rather than the line by line value.
 #'
 #' @return a printable summary
 #' @export
@@ -347,13 +368,19 @@ combine_boots = function(boots, predictorVars) {
 #' # out = boots %>% summarise_boots(...predictors..., "OR" )
 #' # out %>% ggrrr::hux_tidy(
 #' #    rowGroupVars = dplyr::vars(Characteristic,Group),
-#' #   colGroupVars = dplyr::vars(modelName)
+#' #    colGroupVars = dplyr::vars(modelName)
 #' #)
-summarise_boots = function(boots, predictorVars, statistic="OR") {
-  out = combine_boots(boots,predictorVars) %>% 
-    dplyr::select(c(-tidyselect::starts_with("beta"),-type,-p.value)) %>% 
-    dplyr::rename(Characteristic = group, Group = subgroup, !!statistic := statistic, `P-value` = p.component)
-  return(out)
+summarise_boots = function(boots, ..., statistic="OR",global.p=TRUE) {
+  if (global.p) {
+    out = combine_boots(boots,...) %>% 
+      dplyr::select(c(-tidyselect::starts_with("beta"),-type,-p.component)) %>% 
+      dplyr::rename(Characteristic = group, Group = subgroup, !!statistic := statistic, `P-value` = p.value)
+  } else {
+    out = combine_boots(boots,...) %>% 
+      dplyr::select(c(-tidyselect::starts_with("beta"),-type,-p.value)) %>% 
+      dplyr::rename(Characteristic = group, Group = subgroup, !!statistic := statistic, `P-value` = p.component)
+    return(out)
+  }
 }
 
 
@@ -363,7 +390,7 @@ summarise_boots = function(boots, predictorVars, statistic="OR") {
     boots = boots %>% dplyr::mutate(model = purrr::map(model, ~ attr(.x, "object")))
   }
   boots = boots %>%
-    dplyr::mutate(model.perf = purrr::map(model, ~ performance::model_performance(.x) %>% as.data.frame() %>% tidyr::pivot_longer(cols=everything())))
+    dplyr::mutate(model.perf = purrr::map(model, ~ performance::model_performance(.x) %>% as.data.frame() %>% tidyr::pivot_longer(cols=tidyselect::everything())))
   # browser()
   pooled.performance = boots %>%
     tidyr::unnest(model.perf) %>%

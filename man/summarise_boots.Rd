@@ -4,14 +4,18 @@
 \alias{summarise_boots}
 \title{Printable output of model combined}
 \usage{
-summarise_boots(boots, predictorVars, statistic = "OR")
+summarise_boots(boots, ..., statistic = "OR", global.p = TRUE)
 }
 \arguments{
 \item{boots}{a bootstrapped model output}
 
-\item{predictorVars}{all the variables used in all the models.}
+\item{...}{the columns that we are using as predictors, as a
+list of formulae (rhs), a tidyselect call, a dplyr::vars() specification or a
+list of characters}
 
 \item{statistic}{was this an OR or an RR (or a HR) just used for labelling}
+
+\item{global.p}{present the global p value (anova) rather than the line by line value.}
 }
 \value{
 a printable summary
@@ -23,6 +27,6 @@ Printable output of model combined
 # out = boots \%>\% summarise_boots(...predictors..., "OR" )
 # out \%>\% ggrrr::hux_tidy(
 #    rowGroupVars = dplyr::vars(Characteristic,Group),
-#   colGroupVars = dplyr::vars(modelName)
+#    colGroupVars = dplyr::vars(modelName)
 #)
 }

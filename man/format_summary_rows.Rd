@@ -4,12 +4,16 @@
 \alias{format_summary_rows}
 \title{Predict the potential coefficient names for a model output}
 \usage{
-format_summary_rows(rawData, predictorVars)
+format_summary_rows(rawData, ..., label_fn = ~.x)
 }
 \arguments{
-\item{rawData}{the data the model will be fitted to}
+\item{rawData}{a raw data frame of observations}
 
-\item{predictorVars}{the parameters of the model.}
+\item{...}{the columns that we are using as predictors, as a
+list of formulae (rhs), a tidyselect call, a dplyr::vars() specification or a
+list of characters}
+
+\item{label_fn}{a function that converts column names into readable labels}
 }
 \value{
 a dataframe with the likely names of the coefficients
