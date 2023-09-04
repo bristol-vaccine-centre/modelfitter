@@ -4,7 +4,7 @@
 \alias{impute_data}
 \title{Take a list of predictors and impute data for those predictors}
 \usage{
-impute_data(rawData, ...)
+impute_data(rawData, ..., m = getOption("tableone.imputations", 10))
 }
 \arguments{
 \item{rawData}{a raw data frame of observations}
@@ -12,6 +12,8 @@ impute_data(rawData, ...)
 \item{...}{the columns that we are using as predictors, as a
 list of formulae (rhs), a tidyselect call, a dplyr::vars() specification or a
 list of characters}
+
+\item{m}{the number of imputations (default 10)}
 }
 \value{
 a mice object containing imputed data

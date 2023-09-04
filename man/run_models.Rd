@@ -4,7 +4,14 @@
 \alias{run_models}
 \title{Run a set of models}
 \usage{
-run_models(imputedData, modelConfig, modelFunction = logistic_regression, ...)
+run_models(
+  imputedData,
+  modelConfig,
+  modelFunction = logistic_regression,
+  subset = 1:10,
+  pipeline = ~.x,
+  ...
+)
 }
 \arguments{
 \item{imputedData}{a mice imputed data source}
@@ -13,7 +20,11 @@ run_models(imputedData, modelConfig, modelFunction = logistic_regression, ...)
 
 \item{modelFunction}{the type of test as a function call. the function must accept \code{data} and \code{formula} inputs}
 
-\item{...}{not used}
+\item{subset}{a vector of imputations to subset for the analysis.}
+
+\item{pipeline}{a pipeline function (i.e. takes a dataframe and returns a dataframe) that can be used to modify the imputed data}
+
+\item{...}{can be used to provide parameters to the \code{modelFunction}.}
 }
 \value{
 a dataframe with result of running all formulae on all bootstrapped imputations adn summary stats

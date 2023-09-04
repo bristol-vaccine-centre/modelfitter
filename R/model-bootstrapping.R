@@ -10,13 +10,20 @@ NULL
 #'
 #' @param data a data frame
 #' @param formula a formula of the form `binary_outcome ~ obs1 + obs2 + ...`
+#' @param positive test strings to interpret as true if outcome is not a factor or logical.
+#' @param ... not used
 #'
 #' @return a model object
 #' @export
-logistic_regression = function(data, formula) {
+logistic_regression = function(data, formula, positive=c("yes","true","present","confirmed"), ...) {
   outcome = rlang::f_lhs(formula)
-  if (!data %>% dplyr::pull(!!outcome) %>% is.logical()) {
-    data = data %>% dplyr::mutate(!!outcome := tolower(!!outcome) %in% c("yes","true","present"))
+  outCol = data %>% dplyr::pull(!!outcome)
+  if (!outCol %>% is.logical()) {
+    if (is.factor(outCol) && length(levels(outCol))==2) {
+      data = data %>% dplyr::mutate(!!outcome := as.numeric(!!outcome)!=1)
+    } else {
+      data = data %>% dplyr::mutate(!!outcome := tolower(!!outcome) %in% tolower(positive))
+    }
   } 
   stats::glm(formula = formula, family = stats::binomial(), data = data)
 }
@@ -25,10 +32,11 @@ logistic_regression = function(data, formula) {
 #'
 #' @param data a data frame
 #' @param formula a formula of the form `binary_outcome ~ obs1 + obs2 + ...`
+#' @param ... not used
 #'
 #' @return a model object
 #' @export
-log_binomial = function(data, formula) {
+log_binomial = function(data, formula, ...) {
   #browser()
   outcome = rlang::f_lhs(formula)
   if (data %>% dplyr::pull(!!outcome) %>% is.factor()) {
@@ -47,10 +55,11 @@ log_binomial = function(data, formula) {
 #'
 #' @param data a data frame
 #' @param formula a formula of the form `binary_outcome ~ obs1 + obs2 + ...`
+#' @param ... not used
 #'
 #' @return a model object
 #' @export
-log_binomial_2 = function(data, formula) {
+log_binomial_2 = function(data, formula, ...) {
   # browser()
   outcome = rlang::f_lhs(formula)
   if (data %>% dplyr::pull(!!outcome) %>% is.factor()) {
@@ -73,10 +82,11 @@ log_binomial_2 = function(data, formula) {
 #'
 #' @param data a data frame
 #' @param formula a formula of the form `binary_outcome ~ obs1 + obs2 + ...`
+#' @param ... not used
 #'
 #' @return a model object
 #' @export
-quasi_poisson = function(data, formula) {
+quasi_poisson = function(data, formula, ...) {
   outcome = rlang::f_lhs(formula)
   # shape the data so that a positive outcome has a poisson "count" of 1 and a negative outcome is a 0
   if (data %>% dplyr::pull(!!outcome) %>% is.factor()) {
@@ -98,10 +108,11 @@ quasi_poisson = function(data, formula) {
 #'
 #' @param data a data frame
 #' @param formula a formula of the form `binary_outcome ~ obs1 + obs2 + ...`
+#' @param ... not used
 #'
 #' @return a model object
 #' @export
-robust_poisson = function(data, formula) {
+robust_poisson = function(data, formula, ...) {
   outcome = rlang::f_lhs(formula)
   # shape the data so that a positive outcome has a poisson "count" of 1 and a negative outcome is a 0
   if (data %>% dplyr::pull(!!outcome) %>% is.factor()) {
@@ -118,10 +129,11 @@ robust_poisson = function(data, formula) {
 #'
 #' @param data a data frame
 #' @param formula a formula of the form `binary_outcome ~ obs1 + obs2 + ...`
+#' @param ... not used
 #'
 #' @return a model object
 #' @export
-robust_poisson_2 = function(data, formula) {
+robust_poisson_2 = function(data, formula, ...) {
   outcome = rlang::f_lhs(formula)
   # shape the data so that a positive outcome has a poisson "count" of 1 and a negative outcome is a 0
   if (data %>% dplyr::pull(!!outcome) %>% is.factor()) {
@@ -144,10 +156,11 @@ robust_poisson_2 = function(data, formula) {
 #' @param ... the columns that we are using as predictors, as a 
 #'   list of formulae (rhs), a tidyselect call, a dplyr::vars() specification or a
 #'   list of characters
+#' @param m the number of imputations (default 10)
 #'
 #' @return a mice object containing imputed data
 #' @export
-impute_data = function(rawData, ...) {
+impute_data = function(rawData, ..., m=getOption("tableone.imputations",10)) {
   predictorVars = .parse_unique(rawData, ..., .side="rhs") %>% .sort_symbols()
   imputeModel = .cached({
     imputeFrom = rawData %>% dplyr::select(c(tidyselect::where(is.numeric),tidyselect::where(is.factor),tidyselect::where(is.logical))) %>% colnames()
@@ -163,7 +176,7 @@ impute_data = function(rawData, ...) {
     # only use factors and numerics for imputation
     predM[!(names(meth) %in% imputeFrom)] = 0
     set.seed(103)
-    return(mice::mice(rawData, method=meth, predictorMatrix=predM, m=10,maxit = 5,printFlag=FALSE))
+    return(mice::mice(rawData, method=meth, predictorMatrix=predM, m=m,maxit = 5,printFlag=FALSE))
   }, rawData, predictorVars, ...)
   return(imputeModel)
 }
@@ -244,23 +257,31 @@ format_summary_rows = function(rawData, ..., label_fn = ~ .x) {
 #' @param imputedData a mice imputed data source
 #' @param modelConfig a dataframe with column `form` containing formulae to test, with other columns containing any other metadata
 #' @param modelFunction the type of test as a function call. the function must accept `data` and `formula` inputs
-#' @param ... not used
+#' @param subset a vector of imputations to subset for the analysis.
+#' @param pipeline a pipeline function (i.e. takes a dataframe and returns a dataframe) that can be used to modify the imputed data
+#' @param ... can be used to provide parameters to the `modelFunction`.
 #'
 #' @return a dataframe with result of running all formulae on all bootstrapped imputations adn summary stats
 #' @export
-run_models = function(imputedData, modelConfig, modelFunction = logistic_regression, ...) {
+run_models = function(imputedData, modelConfig, modelFunction = logistic_regression, subset = 1:10, pipeline = ~ .x, ...) {
 
   modelConfig = modelConfig %>% dplyr::mutate(
     dependent = purrr::map_chr(form, ~ all.vars(rlang::f_lhs(.x))),
     predictors = purrr::map(form, ~ all.vars(rlang::f_rhs(.x)))
   )
 
-  boots = tibble::tibble(bootstrap = 1:10) %>% tidyr::crossing(modelConfig) %>%
+  map_pipeline = purrr::as_mapper(pipeline)
+  
+  if (any(subset>imputedData$m)) warning("`subset` contains bootstraps larger than available in the imputed data.")
+  subset = subset[subset<=imputedData$m]
+  
+  boots = tibble::tibble(bootstrap = subset) %>% tidyr::crossing(modelConfig) %>%
     # pull the imputed data as a bootstrap
     dplyr::mutate(impute = purrr::map(bootstrap, ~ mice::complete(imputedData,.x))) %>%
+    dplyr::mutate(impute = purrr::map(impute, map_pipeline)) %>%
     # TODO: filter content to look at age... dplyr::mutate(impute = purrr::map(bootstrap, ~ mice::complete(imputedData,.x) %>% dplyr::filter(...))) %>%
     # fit the model to the data
-    dplyr::mutate(model = purrr::map2(impute, form, ~  modelFunction(data=.x, formula=.y))) %>%
+    dplyr::mutate(model = purrr::map2(impute, form, ~  modelFunction(data=.x, formula=.y, ...))) %>%
     dplyr::mutate(model.coef = purrr::map(model, ~ suppressWarnings(broom::tidy(.x)))) %>%
     dplyr::mutate(model.stats = purrr::map(model, ~ suppressWarnings(broom::glance(.x))))
 

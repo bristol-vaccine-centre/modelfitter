@@ -1,13 +1,29 @@
 # devtools::load_all("~/Git/tableone")
 # devtools::load_all("~/Git/modelfitter")
 
-plot_regression = function(boots, facet = NULL, stat_label="Odds Ratio", report_fit = FALSE, limit = c(NA,NA), p.component=FALSE) {
+#' Forest plot from a set of bootstrapped models
+#'
+#' @param boots a set of bootstrapped model fits as output by `run_models`
+#' @param facet a faceting variable (usually `modelName``)
+#' @param stat_label what to call the x axis
+#' @param report_fit which components of the model performance statistics do we
+#'   want to report
+#' @param limit x axis limits
+#' @param p.component indicate which component parts of the fit are significant
+#'   and which are not
+#' @param label_fn a function (or lambda) that accepts an vector and returns a vector
+#'
+#' @return a ggplot
+#' @export
+#'
+#' @examples
+plot_regression = function(boots, facet = NULL, stat_label="Odds Ratio", report_fit = FALSE, limit = c(NA,NA), p.component=FALSE, label_fn = ~ .x) {
   
   facet = tryCatch(rlang::ensym(facet), error = function(e) NULL)
   facets = list(facet)
   is_facetted = is.null(facet)
   
-  label_fn = getOption("tableone.labeller",label_fn)
+  label_fn = purrr::as_mapper(getOption("tableone.labeller",label_fn))
   
   predictorVars = .parse_unique(boots$impute[[1]], boots$form, .side="rhs")
   keys = format_summary_rows(boots$impute[[1]], predictorVars)

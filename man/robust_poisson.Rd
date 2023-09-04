@@ -4,12 +4,14 @@
 \alias{robust_poisson}
 \title{Fit robust poisson regression using sandwich estimators}
 \usage{
-robust_poisson(data, formula)
+robust_poisson(data, formula, ...)
 }
 \arguments{
 \item{data}{a data frame}
 
 \item{formula}{a formula of the form \code{binary_outcome ~ obs1 + obs2 + ...}}
+
+\item{...}{not used}
 }
 \value{
 a model object

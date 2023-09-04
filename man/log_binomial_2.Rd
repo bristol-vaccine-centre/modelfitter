@@ -4,12 +4,14 @@
 \alias{log_binomial_2}
 \title{Fit standard log binomial regression using logbin::logbin}
 \usage{
-log_binomial_2(data, formula)
+log_binomial_2(data, formula, ...)
 }
 \arguments{
 \item{data}{a data frame}
 
 \item{formula}{a formula of the form \code{binary_outcome ~ obs1 + obs2 + ...}}
+
+\item{...}{not used}
 }
 \value{
 a model object

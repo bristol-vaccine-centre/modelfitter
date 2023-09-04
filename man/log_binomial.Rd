@@ -4,12 +4,14 @@
 \alias{log_binomial}
 \title{Fit standard log binomial regression using stats::glm}
 \usage{
-log_binomial(data, formula)
+log_binomial(data, formula, ...)
 }
 \arguments{
 \item{data}{a data frame}
 
 \item{formula}{a formula of the form \code{binary_outcome ~ obs1 + obs2 + ...}}
+
+\item{...}{not used}
 }
 \value{
 a model object

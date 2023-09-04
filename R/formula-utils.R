@@ -29,6 +29,28 @@ as_vars = function(tidyselect, data=NULL) {
   lapply(names(res), as.symbol)
 }
 
+#' Convert multivariate formula to list of univariate formulae
+#'
+#' @param formula a formula of the type y ~ x1 + x2 + x3 + ....
+#'
+#' @return a list of formulae of the type y ~ x1, y ~ x2, y ~ x3, ....
+#' @export
+#' @examples
+#' univariate_from_multivariate(y ~ x1 + x2 + x3)
+#' univariate_from_multivariate(~ x1 + x2 + x3)
+univariate_from_multivariate = function(formula) {
+  tmp = stats::terms(formula)
+  rhs = rlang::f_rhs(formula) %>% all.vars()
+  lhs = rlang::f_lhs(formula)
+  if (!is.null(lhs)) {
+    lapply(rhs, function(x) stats::as.formula(sprintf("`%s` ~ `%s`",rlang::as_label(lhs),x)))
+  } else {
+    lhs = rhs[[1]]
+    rhs = rhs[-1]
+    lapply(rhs, function(x) stats::as.formula(sprintf("~ `%s` + `%s`",lhs,x)))
+  }
+}
+
 # .parse_formulae(iris, ~ Species + Petal.Width + Missing, a ~ b+Sepal.Width)
 # .parse_formulae(iris, Species ~ Petal.Width + Missing, a ~ b+Sepal.Width, side="lhs")
 # .parse_formulae(iris, list(Species ~ Petal.Width + Missing, a ~ b+Sepal.Width), side="rhs")

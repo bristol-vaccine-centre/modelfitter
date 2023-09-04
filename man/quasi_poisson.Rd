@@ -4,12 +4,14 @@
 \alias{quasi_poisson}
 \title{Fit standard poisson regression}
 \usage{
-quasi_poisson(data, formula)
+quasi_poisson(data, formula, ...)
 }
 \arguments{
 \item{data}{a data frame}
 
 \item{formula}{a formula of the form \code{binary_outcome ~ obs1 + obs2 + ...}}
+
+\item{...}{not used}
 }
 \value{
 a model object

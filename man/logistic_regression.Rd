@@ -4,12 +4,21 @@
 \alias{logistic_regression}
 \title{Fit standard logistic regression}
 \usage{
-logistic_regression(data, formula)
+logistic_regression(
+  data,
+  formula,
+  positive = c("yes", "true", "present", "confirmed"),
+  ...
+)
 }
 \arguments{
 \item{data}{a data frame}
 
 \item{formula}{a formula of the form \code{binary_outcome ~ obs1 + obs2 + ...}}
+
+\item{positive}{test strings to interpret as true if outcome is not a factor or logical.}
+
+\item{...}{not used}
 }
 \value{
 a model object
