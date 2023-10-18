@@ -16,8 +16,9 @@
 #' @param ... inputs that the code in expr depends on and changes in which require the code re-running, Could be Sys.Date()
 #' @param .prefix a name of the operation so that you can namespace the cached files and do selective clean up operations on them
 #' @param .nocache an option to defeat the caching which can be set globally as options("cache.disable"=TRUE)
-#' @param .cache the location of the cache as a directory. May get its value from options("cache.dir") or the default value of rappdirs::user_cache_dir()
+#' @param .cache the location of the cache as a directory. May get its value from options("cache.dir") or the default value of rappdirs::user_cache_dir("ggrrr")
 #' @param .stale the length of time in days to keep cached data before considering it as stale. can also be set by options("cache.stale")
+#' @keywords internal
 #'
 #' @return the output of .expr which will usually be a value
 .cached = function (
@@ -45,11 +46,7 @@
   path = paste0(.cache,paste(.prefix,md5code,md5params,sep = "-"),".rda")
 
   if (.nocache) unlink(path)
-  # if (file.exists(path)) {
-  #   mtime = as.Date(file.info(path)$mtime)
-  #   if (mtime < Sys.Date()-.stale+1) unlink(path)
-  # }
-  # TODO: consider whether there is a better way to do staleness. This works on a per call basis not a per item basis.
+
   .cache_delete_stale(.cache = .cache, .prefix = .prefix, .stale = .stale)
 
   if (file.exists(path)) {
@@ -67,6 +64,7 @@
   return(obj)
 }
 
+
 #' Delete stale files in a cache
 #'
 #' Staleness is determined by the number of days from 2am on the current day in the current time-zone.
@@ -76,10 +74,11 @@
 #' it may end up using old data.
 #'
 #' @param .prefix a name of the operation so that you can namespace the cached files and do selective clean up operations on them
-#' @param .cache the location of the cache as a directory. May get its value from options("cache.dir") or the default value of rappdirs::user_cache_dir()
+#' @param .cache the location of the cache as a directory. May get its value from options("cache.dir") or the default value of rappdirs::user_cache_dir("ggrrr")
 #' @param .stale the length of time in days to keep cached data before considering it as stale.
 #'
 #' @return nothing. called for side effects.
+#' @keywords internal
 .cache_delete_stale = function(
   .cache = rappdirs::user_cache_dir(utils::packageName()),
   .prefix = ".*",
@@ -90,34 +89,25 @@
 
   if(!stringr::str_ends(.cache,"/")) .cache = paste0(.cache,"/")
   day_start = getOption("cache.time_day_starts", default=3)
-  stale_time = as.POSIXct(Sys.Date()-.stale+1 )+day_start*60*60
-  fs::file_info(fs::dir_ls(.cache)) %>%
 
-    dplyr::filter(change_time <
-             # if .stale==1 this is (by default) 2am on the current day.
-             # something cached before 2am is deemed to be the previous day.
-             stale_time
-    ) %>%
+  # if .stale==1 this is (by default) 2am on the current day.
+  # something cached before 2am is deemed to be the previous day.
+
+  fs::file_info(fs::dir_ls(.cache)) %>%
+    dplyr::mutate(stale_time = as.POSIXct(as.Date(modification_time)+.stale-1)+day_start*60*60) %>%
+    dplyr::filter(Sys.time() > stale_time) %>%
     dplyr::pull(path) %>%
     unlink()
-    # purrr::pwalk(function(path, ...) {
-    #   # tmp = rlang::list2(...)
-    #   message("deleting: ", path)
-    #   unlink(path)
-    # })
 }
-
-# TODO:
-# download and execute code e.g. unzip + read file
-# generally filesystem abstraction functions from ukcovidtools
 
 #' Clear data from the passthrough cache for complex or long running operations
 #'
 #' @param .prefix a regular expression matching the prefix of the cached item, so that do selective clean up operations. defaults to everything.
-#' @param .cache the location of the cache as a directory. May get its value from options("cache.dir") or the default value of rappdirs::user_cache_dir()
+#' @param .cache the location of the cache as a directory. May get its value from options("ggrrr.cache.dir") or the default value of rappdirs::user_cache_dir("ggrrr")
 #' @param interactive suppress `are you sure?` warning with a FALSE value (defaults to TRUE)
 #'
 #' @return nothing. called for side effects
+#' @keywords internal
 .cache_clear = function (
   .cache = rappdirs::user_cache_dir(utils::packageName()),
   .prefix = ".*",
@@ -151,13 +141,14 @@
 #' makes sure it is reused.
 #'
 #' @param url the url to download
-#' @param ... ignored
+#' @inheritDotParams utils::download.file
 #' @param .nocache if set to TRUE all caching is disabled
 #' @param .cache the location of the downloaded files
 #' @param .stale how long to leave this file before replacing it.
 #' @param .extn the file name extension
 #'
 #' @return the path to the downloaded file
+#' @keywords internal
 .cache_download = function(
   url,
   ...,
@@ -179,11 +170,7 @@
   path = normalizePath(paste0(.cache,fname), mustWork = FALSE)
 
   if (.nocache) unlink(path)
-  # if (file.exists(path)) {
-  #   mtime = as.Date(file.info(path)$mtime)
-  #   if (mtime < Sys.Date()-.stale+1) unlink(path)
-  # }
-  # TODO: consider whether there is a better way to do staleness. This works on a per call basis not a per item basis.
+
   .cache_delete_stale(.cache = .cache, .prefix = path, .stale = .stale)
 
   if (file.exists(path)) {
@@ -192,7 +179,7 @@
     #assign(path, obj, envir=.arear.cache)
   } else {
     message("downloading item: ",qualifier)
-    utils::download.file(url,path)
+    utils::download.file(url,path, ...)
     return(path)
   }
 

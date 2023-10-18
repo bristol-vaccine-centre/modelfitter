@@ -20,7 +20,7 @@
 
 \item{.nocache}{an option to defeat the caching which can be set globally as options("cache.disable"=TRUE)}
 
-\item{.cache}{the location of the cache as a directory. May get its value from options("cache.dir") or the default value of rappdirs::user_cache_dir()}
+\item{.cache}{the location of the cache as a directory. May get its value from options("cache.dir") or the default value of rappdirs::user_cache_dir("ggrrr")}
 
 \item{.prefix}{a name of the operation so that you can namespace the cached files and do selective clean up operations on them}
 
@@ -33,3 +33,4 @@ the output of .expr which will usually be a value
 executes expr and saves the output as an RDS file indexed by has of code in expr
 and the hash of input variables (which should contain any variable inputs)
 }
+\keyword{internal}

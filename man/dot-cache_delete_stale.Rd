@@ -11,7 +11,7 @@
 )
 }
 \arguments{
-\item{.cache}{the location of the cache as a directory. May get its value from options("cache.dir") or the default value of rappdirs::user_cache_dir()}
+\item{.cache}{the location of the cache as a directory. May get its value from options("cache.dir") or the default value of rappdirs::user_cache_dir("ggrrr")}
 
 \item{.prefix}{a name of the operation so that you can namespace the cached files and do selective clean up operations on them}
 
@@ -27,3 +27,4 @@ The time is configurable and option(cache.time_day_starts = 0) would be midnight
 Automated analysis using caches and updated data should ensure that analysis does not cross this time point otherwise
 it may end up using old data.
 }
+\keyword{internal}

@@ -11,7 +11,7 @@
 )
 }
 \arguments{
-\item{.cache}{the location of the cache as a directory. May get its value from options("cache.dir") or the default value of rappdirs::user_cache_dir()}
+\item{.cache}{the location of the cache as a directory. May get its value from options("ggrrr.cache.dir") or the default value of rappdirs::user_cache_dir("ggrrr")}
 
 \item{.prefix}{a regular expression matching the prefix of the cached item, so that do selective clean up operations. defaults to everything.}
 
@@ -23,3 +23,4 @@ nothing. called for side effects
 \description{
 Clear data from the passthrough cache for complex or long running operations
 }
+\keyword{internal}

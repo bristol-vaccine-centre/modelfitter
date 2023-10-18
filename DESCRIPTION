@@ -1,6 +1,6 @@
 Package: modelfitter
 Title: Bootstrapping models and model fits
-Version: 0.0.0.9002
+Version: 0.0.0.9012
 Authors@R: 
     person(given = "Robert",
            family = "Challen",
@@ -40,7 +40,16 @@ Imports:
     ggstance,
     huxtable,
     systemfonts,
-    rappdirs
+    rappdirs,
+    survival,
+    lifecycle,
+    MASS,
+    cli,
+    elrm,
+    forcats,
+    glue
+Remotes: tableone=github::bristol-vaccine-centre/tableone
 Suggests: 
-    tidyverse
+    tidyverse,
+    tableone
 URL: https://github.com/bristol-vaccine-centre/modelfitter

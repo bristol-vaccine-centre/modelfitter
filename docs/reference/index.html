@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">modelfitter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9012</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,39 +53,34 @@
 
       <dl><dt>
           
-          <code><a href="analyse_performance.html">analyse_performance()</a></code> 
-        </dt>
-        <dd>Performance metrics of bootstrapped models</dd>
-      </dl><dl><dt>
-          
           <code><a href="as_vars.html">as_vars()</a></code> 
         </dt>
         <dd>Reuse tidy-select syntax outside of a tidy-select function</dd>
       </dl><dl><dt>
           
-          <code><a href="combine_boots.html">combine_boots()</a></code> 
+          <code><a href="bootstrap_provider.html">bootstrap_provider()</a></code> 
         </dt>
-        <dd>Combine bootstraps</dd>
+        <dd>Provide a access to bootstrap resamples of a dataset</dd>
       </dl><dl><dt>
           
-          <code><a href="dot-cache_clear.html">.cache_clear()</a></code> 
+          <code><a href="configure_model.html">configure_model()</a></code> 
         </dt>
-        <dd>Clear data from the passthrough cache for complex or long running operations</dd>
+        <dd>Configure a single model fit using the <code>modelfitter</code> framework</dd>
       </dl><dl><dt>
           
-          <code><a href="dot-cache_delete_stale.html">.cache_delete_stale()</a></code> 
+          <code><a href="configure_models.html">configure_models()</a></code> 
         </dt>
-        <dd>Delete stale files in a cache</dd>
+        <dd>Configure a set of model fits from a specification of different combinations</dd>
       </dl><dl><dt>
           
-          <code><a href="dot-cache_download.html">.cache_download()</a></code> 
+          <code><a href="cox_model.html">cox_model()</a></code> 
         </dt>
-        <dd>Download a file into a local cache.</dd>
+        <dd>Fit standard cox model.</dd>
       </dl><dl><dt>
           
-          <code><a href="dot-cached.html">.cached()</a></code> 
+          <code><a href="data_subset_provider.html">data_subset_provider()</a></code> 
         </dt>
-        <dd>A simple pass-through cache for complex or long running operations</dd>
+        <dd>Provide a mechanism for subsetting data</dd>
       </dl><dl><dt>
           
           <code><a href="dot-gg_hide_X_axis.html">.gg_hide_X_axis()</a></code> 
@@ -123,34 +118,89 @@
         <dd>Set the angle of the x axis labels of a plot</dd>
       </dl><dl><dt>
           
-          <code><a href="format_summary_rows.html">format_summary_rows()</a></code> 
+          <code><a href="exact_logistic_regression.html">exact_logistic_regression()</a></code> 
         </dt>
-        <dd>Predict the potential coefficient names for a model output</dd>
+        <dd>Fit exact logistic regression</dd>
       </dl><dl><dt>
           
-          <code><a href="impute_data.html">impute_data()</a></code> 
+          <code><a href="execute_configuration.html">execute_configuration()</a></code> 
         </dt>
-        <dd>Take a list of predictors and impute data for those predictors</dd>
+        <dd>Fit statistical models defined in a <code>modelfitter</code> configuration</dd>
+      </dl><dl><dt>
+          
+          <code><a href="f_lhs_vars.html">f_lhs_vars()</a></code> 
+        </dt>
+        <dd>Get all used variables on LHS of a formula</dd>
+      </dl><dl><dt>
+          
+          <code><a href="f_rhs_vars.html">f_rhs_vars()</a></code> 
+        </dt>
+        <dd>Get all used variables on LHS of a formula</dd>
+      </dl><dl><dt>
+          
+          <code><a href="format_ci.html">format_ci()</a></code> 
+        </dt>
+        <dd>Format a confidence interval</dd>
+      </dl><dl><dt>
+          
+          <code><a href="format_model.html">format_model()</a></code> 
+        </dt>
+        <dd>Generate a table for a single model output</dd>
+      </dl><dl><dt>
+          
+          <code><a href="format_ratio.html">format_ratio()</a></code> 
+        </dt>
+        <dd>Format a ratio, truncating at a set level above and below 1 on log scale.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="format_summary.html">format_summary()</a></code> 
+        </dt>
+        <dd>Format a summary of multiple fits into a table.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="formula_provider.html">formula_provider()</a></code> 
+        </dt>
+        <dd>Construct a configuration for multiple formulae</dd>
+      </dl><dl><dt>
+          
+          <code><a href="global_p_value.html">global_p_value()</a></code> 
+        </dt>
+        <dd>Calculate a global P-value for a model fit for each of the predictors.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="imputation_provider.html">imputation_provider()</a></code> 
+        </dt>
+        <dd>Provide access to missing data imputations</dd>
       </dl><dl><dt>
           
           <code><a href="log_binomial.html">log_binomial()</a></code> 
         </dt>
-        <dd>Fit standard log binomial regression using stats::glm</dd>
+        <dd>Fit standard log binomial regression using <code><a href="https://rdrr.io/r/stats/glm.html" class="external-link">stats::glm</a></code></dd>
       </dl><dl><dt>
           
           <code><a href="log_binomial_2.html">log_binomial_2()</a></code> 
         </dt>
-        <dd>Fit standard log binomial regression using logbin::logbin</dd>
+        <dd>Fit standard log binomial regression using <code><a href="https://rdrr.io/pkg/logbin/man/logbin.html" class="external-link">logbin::logbin</a></code></dd>
       </dl><dl><dt>
           
           <code><a href="logistic_regression.html">logistic_regression()</a></code> 
         </dt>
-        <dd>Fit standard logistic regression</dd>
+        <dd>Fit standard logistic regression with unordered factors.</dd>
       </dl><dl><dt>
           
-          <code><a href="plot_regression.html">plot_regression()</a></code> 
+          <code><a href="logistic_regression_ordered.html">logistic_regression_ordered()</a></code> 
         </dt>
-        <dd>Forest plot from a set of bootstrapped models</dd>
+        <dd>Fit standard logistic regression.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="model_function_provider.html">model_function_provider()</a></code> 
+        </dt>
+        <dd>Construct a configuration for multiple statistical models</dd>
+      </dl><dl><dt>
+          
+          <code><a href="model_labels.html">model_labels()</a></code> 
+        </dt>
+        <dd>Creates a table or plot row template for a set of models</dd>
       </dl><dl><dt>
           
           <code><a href="pmixnorm.html">pmixnorm()</a></code> 
@@ -168,6 +218,11 @@
         <dd>Fit standard poisson regression</dd>
       </dl><dl><dt>
           
+          <code><a href="quasi_poisson_ordered.html">quasi_poisson_ordered()</a></code> 
+        </dt>
+        <dd>Fit standard poisson regression with ordered contrasts</dd>
+      </dl><dl><dt>
+          
           <code><a href="robust_poisson.html">robust_poisson()</a></code> 
         </dt>
         <dd>Fit robust poisson regression using sandwich estimators</dd>
@@ -175,12 +230,12 @@
           
           <code><a href="robust_poisson_2.html">robust_poisson_2()</a></code> 
         </dt>
-        <dd>Fit robust poisson regression using geepack::glm</dd>
+        <dd>Fit robust poisson regression using <code>geepack::glm</code></dd>
       </dl><dl><dt>
           
-          <code><a href="run_models.html">run_models()</a></code> 
+          <code><a href="spline_term_plot.html">spline_term_plot()</a></code> 
         </dt>
-        <dd>Run a set of models</dd>
+        <dd>Spline term marginal effects plot</dd>
       </dl><dl><dt>
           
           <code><a href="sprintf_list.html">sprintf_list()</a></code> 
@@ -188,9 +243,9 @@
         <dd>Sprintf with a list input</dd>
       </dl><dl><dt>
           
-          <code><a href="summarise_boots.html">summarise_boots()</a></code> 
+          <code><a href="summarise_fits.html">summarise_fits()</a></code> 
         </dt>
-        <dd>Printable output of model combined</dd>
+        <dd>Summarise a modelfitter execution</dd>
       </dl><dl><dt>
           
           <code><a href="univariate_from_multivariate.html">univariate_from_multivariate()</a></code> 

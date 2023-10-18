@@ -1,14 +1,18 @@
 # package depends
 # c("tidyselect","rlang") %>% lapply(usethis::use_package)
 
-# look for a dataframe as the first argument in the call stack
+# look for a dataframe as the first argument of a function in the call stack
+# z = function(a) {.search_call_stack()}
+# y = function(a) {a}
+# x = function(df, a_default="a") {return(y(y(y(z()))))}
+# x(iris)
 .search_call_stack = function(nframe = sys.nframe()-1) {
   frame = sys.frame(nframe)
-  first_arg_name = ls(frame)[1]
+  first_arg_name = names(formals(sys.function(nframe)))[[1]]
   try({
-    data = suppressWarnings(first_arg_name %>% get(envir=frame))
+    data = suppressWarnings(get(first_arg_name, envir=frame))
     if(is.data.frame(data)) return(data)
-  })
+  },silent = TRUE)
   nframe = nframe-1
   if (nframe < 1) stop("no data frame found")
   .search_call_stack(nframe)
@@ -41,14 +45,48 @@ as_vars = function(tidyselect, data=NULL) {
 univariate_from_multivariate = function(formula) {
   tmp = stats::terms(formula)
   rhs = rlang::f_rhs(formula) %>% all.vars()
-  lhs = rlang::f_lhs(formula)
+  lhs = rlang::f_lhs(formula) %>% format()
   if (!is.null(lhs)) {
-    lapply(rhs, function(x) stats::as.formula(sprintf("`%s` ~ `%s`",rlang::as_label(lhs),x)))
+    lapply(rhs, function(x) stats::as.formula(sprintf("%s ~ `%s`",lhs,x)))
   } else {
     lhs = rhs[[1]]
     rhs = rhs[-1]
     lapply(rhs, function(x) stats::as.formula(sprintf("~ `%s` + `%s`",lhs,x)))
   }
+}
+
+#' Get all used variables on LHS of a formula
+#'
+#' @param formula a formula or list of formulae
+#'
+#' @return the variables on the LHS of the formulae as a character vector
+#' @export
+#'
+#' @examples
+#' f_rhs_vars(survival::Surv(time,event) ~ x + z +y)
+#' f_rhs_vars(survival::Surv(time,event) ~ pspline(x) + z + y)
+f_rhs_vars = function(formula) {
+  if (is.list(formula)) return(purrr::list_c(lapply(formula, f_rhs_vars)) %>% unique())
+  return(all.vars(rlang::f_rhs(formula)))
+}
+
+#' Get all used variables on LHS of a formula
+#'
+#' @param formula a formula or list of formulae
+#'
+#' @return the variables on the RHS of the formulae as a character vector
+#' @export
+#'
+#' @examples
+#' f_lhs_vars(survival::Surv(time,event) ~ x + z + y)
+f_lhs_vars = function(formula) {
+  if (is.list(formula)) return(unique(purrr::list_c(lapply(formula, f_lhs_vars))))
+  f = formula %>% 
+    rlang::f_lhs() %>% 
+    format() %>%
+    sprintf(fmt="~ %s") %>%
+    stats::as.formula()
+  return(f_rhs_vars(f))
 }
 
 # .parse_formulae(iris, ~ Species + Petal.Width + Missing, a ~ b+Sepal.Width)
@@ -65,12 +103,13 @@ univariate_from_multivariate = function(formula) {
   lapply(list_form, function(form) {
 
     if (side == "lhs") {
-      vars = rlang::f_lhs(form) %>% all.vars()
+      vars = f_lhs_vars(form)
     } else if (side == "rhs") {
-      vars = rlang::f_rhs(form) %>% all.vars()
-      if (all(vars == c("."))) vars = setdiff(colnames(df),all.vars(rlang::f_lhs(form)))
+      vars = f_rhs_vars(form)
+      if (any(vars == c("."))) vars = setdiff(colnames(df),f_lhs_vars(form))
     } else {
-      vars = form %>% all.vars()
+      vars = unique(c(f_rhs_vars(form),f_lhs_vars(form)))
+      if (any(vars == c("."))) vars = colnames(df)
     }
 
     wronguns = setdiff(vars, colnames(df))
@@ -221,4 +260,56 @@ univariate_from_multivariate = function(formula) {
     FALSE
   })
   return(out)
+}
+
+
+# .pair_apply(diamonds, chi = ~ stats::chisq.test(.x,.y), .cols = tidyselect::where(is.factor)) %>% dplyr::mutate(pvalue = purrr::map_dbl(chi, ~.x$p.value))
+# .pair_apply(diamonds, chi = chisq.test, .cols = tidyselect::where(is.factor)) %>% dplyr::mutate(pvalue = purrr::map_dbl(chi, ~.x$p.value))
+# .pair_apply(diamonds, chi = ~ stats::chisq.test(.x,.y)$p.value, method = ~ "chisq", .cols = tidyselect::where(is.factor))
+# .pair_apply(diamonds, error = ~ stop("error in cols"), .cols_x = tidyselect::where(is.factor),.cols_y = tidyselect::where(is.numeric))
+# iris %>% dplyr::group_by(Species) %>% .pair_apply(cor = cor, method = ~ "chisq", .cols = tidyselect::where(is.numeric))
+.pair_apply = function(df, ..., .cols = tidyselect::everything(), .cols_x = NULL, .cols_y = NULL, .diagonal=FALSE) {
+  .cols = rlang::enexpr(.cols)
+  .cols_x = rlang::enexpr(.cols_x)
+  .cols_y = rlang::enexpr(.cols_y)
+  if (dplyr::is.grouped_df(df)) return(df %>% dplyr::group_modify(function(d,g,...) .pair_apply(d, ...), ..., .cols=!!.cols, .cols_x=!!.cols_x, .cols_y=!!.cols_y))
+  if (is.null(.cols_x)) .cols_x = .cols
+  if (is.null(.cols_y)) .cols_y = .cols
+  dfx = df %>% dplyr::select(!!.cols_x)
+  dfy = df %>% dplyr::select(!!.cols_y)
+  dots = rlang::list2(...)
+
+  err2 = character()
+  out2 = dplyr::bind_rows(
+    lapply(colnames(dfx), function(xcol) {
+      x = dplyr::pull(dfx,xcol)
+      dplyr::bind_rows(
+        lapply(colnames(dfy), function(ycol) {
+          if (.diagonal || xcol != ycol) {
+            y = dplyr::pull(dfy,ycol)
+            out = tibble::tibble(var1 = xcol, var2 = ycol)
+            for (name in names(dots)) {
+              fn = purrr::as_mapper(dots[[name]])
+              res = try(fn(x, y), silent = TRUE)
+              if (inherits(res, "try-error")) {
+                reason = attr(res,"condition")$message
+                err2 <<- c(err2,reason)
+                res = NA
+              }
+              if (is.atomic(res)) {
+                out = out %>% dplyr::mutate(!!name := res)
+              } else {
+                out = out %>% dplyr::mutate(!!name := list(res))
+              }
+            }
+            return(out)
+          } else {
+            return(NULL)
+          }
+        })
+      )
+    })
+  )
+  if (length(err2) > 0) warning(unique(err2))
+  return(out2)
 }
