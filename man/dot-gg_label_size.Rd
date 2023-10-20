@@ -12,3 +12,4 @@
 \description{
 Labels like geom_text are in a random unit size which is only mysteriously connected to the size of text on axes
 }
+\keyword{internal}

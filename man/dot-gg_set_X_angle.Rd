@@ -15,3 +15,4 @@ a theme
 \description{
 Set the angle of the x axis labels of a plot
 }
+\keyword{internal}

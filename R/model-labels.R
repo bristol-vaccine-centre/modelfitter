@@ -82,8 +82,15 @@
 #' 
 model_labels = function(model, label_fn, subgroup_label_fn, ...) {
   
+  if (rlang::is_missing(label_fn)) {
+    label_fn = getOption("modelfitter.labeller", ~ .x)
+  }
+  if (rlang::is_missing(subgroup_label_fn)) {
+    # c("18-24-25-30","18-24") %>% stringr::str_replace("^([^-]+-[^-]+)-([^-]+-[^-]+)$","\\1 vs \\2")
+    subgroup_label_fn = getOption("modelfitter.level_labeller", ~ stringr::str_replace(.x, "^([^-]+-[^-]+)-([^-]+-[^-]+)$","\\1 vs. \\2"))
+  }
+  
   if (inherits(model,"list")) {
-    
     tmp = purrr::imap(model, ~ model_labels(.x, label_fn, subgroup_label_fn) %>% dplyr::mutate(model.order = .y))
     return(.combine_label_df(tmp))
   }
@@ -94,14 +101,10 @@ model_labels = function(model, label_fn, subgroup_label_fn, ...) {
   tmp = attributes(stats::terms(model))
   
   # defaults to option output or no-op
-  if (rlang::is_missing(label_fn)) {
-    label_fn = getOption("modelfitter.labeller", ~ .x)
-  }
+  
   col_labeller = rlang::as_function(label_fn)
   
-  if (rlang::is_missing(subgroup_label_fn)) {
-    subgroup_label_fn = getOption("modelfitter.level_labeller", ~ stringr::str_replace(.x, "-", " vs. "))
-  }
+  
   level_labeller = rlang::as_function(subgroup_label_fn)
   
   # These are the suffixes applied to model terms if they are ordered
@@ -130,22 +133,26 @@ model_labels = function(model, label_fn, subgroup_label_fn, ...) {
     purrr::map( ~ paste0(.x[,3],collapse = ":")) %>% unique() %>% 
     purrr::discard(~ .x == "") %>% unlist()
   
+  grouplabels = mterms %>% stringr::str_match_all(sprintf("(^|:)(%s)", termregex)) %>% 
+    purrr::map( ~ .x[,3]) %>% unlist() %>% unique() %>% 
+    purrr::discard(~ .x == "") %>% unlist()
+  
   tmp2 = tibble::tibble(
     predictors = if (is.null(tmp$term.labels)) termlabels else tmp$term.labels,
     keys = lapply(predictors, function(x) names(which(tmp$factors[,x]==1))),
   ) %>% dplyr::mutate(group.order = dplyr::row_number())
   
+  mgroups = mgroups[mgroups %in% grouplabels]
   
   # Extract the levels for each predictor from model data frame
   lvls = lapply(mgroups, function(n) {
     # n = "clarity"
-    
     x = mframe[[n]]
     type = class(x)[[1]]
     
     # Here we are extracting the levels of the individual predictors (i.e. each
     # of mgroups) as specified in the model coeficients.
-    nlevels = mterms %>% stringr::str_extract(sprintf("%s(.*?)(:(%s))?$",.escape(n), termregex),1) %>% 
+    nlevels = mterms %>% stringr::str_extract(sprintf("(^|:)%s(.*?)(:(%s).*)?$",.escape(n), termregex),2) %>% 
       stats::na.omit() %>% unique()
     
     # The bare term exists in the coeffients and no level is matched
@@ -235,6 +242,7 @@ model_labels = function(model, label_fn, subgroup_label_fn, ...) {
   # This generates the possible set of model coefficients
   # including combinations created by interaction terms as
   # a long dataframe. 
+  # TODO: this does not work if there are only interaction terms.
   tmp3 = tmp2 %>% dplyr::mutate(
     lvls = purrr::map(keys, ~ purrr::map(.x, ~ lvls[[.x]]$subgroup.term)),
     combs = purrr::map(lvls, ~ expand.grid(.x) %>% 

@@ -44,6 +44,7 @@
 #' @param ... a named list of formulae or formulae lists. In the simplest use
 #'   case this is a single formula, see examples for more possibilities.
 #'
+#' @export
 #' @examples
 #' form = is_coloured ~ cut + carat + clarity * price
 #' fp = formula_provider(
@@ -96,6 +97,7 @@ formula_provider = function(...) {
 #'   case this is a single function, see examples for more possibilities.
 #'   the functions must accept `data` as first parameter and `formula` as second.
 #'
+#' @export
 #' @examples
 #' # in the simplest version the name is pulled from the input
 #' mfp = model_function_provider(logistic_regression)
@@ -132,10 +134,21 @@ model_function_provider = function(...) {
 
 # Data set boostraps ----
 
+#' Provide a access to a dataset
+#'
+#' @param data the data frame
+#' @param formulae a list of formulae with all the columns used
+#'
+#' @return a function that returns a dataset
+#' @export
+raw_data_provider = function(data, formulae = ~ .) {
+  return(bootstrap_provider(data, max_n=1, formulae = formulae))
+}
+
 #' Provide a access to bootstrap resamples of a dataset
 #'
 #' @param data the data frame
-#' @param formulae a lit of formulae with all the columns used
+#' @param formulae a list of formulae with all the columns used
 #' @param max_n the maximum number of different bootstraps
 #'
 #' @return a function that returns a dataset for inputs between `1:max_n`
@@ -246,6 +259,7 @@ data_subset_provider = function(...) {
   dots = rlang::exprs_auto_name(dots,repair_auto = "unique",repair_quiet = TRUE)
   dots = lapply(dots, function(x) {
     function(data) data %>% 
+      dplyr::ungroup() %>%
       dplyr::filter(!!x) %>%
       dplyr::mutate(dplyr::across(dplyr::where(is.factor), forcats::fct_drop))
   })

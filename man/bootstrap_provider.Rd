@@ -11,7 +11,7 @@ bootstrap_provider(data, max_n, formulae = ~.)
 
 \item{max_n}{the maximum number of different bootstraps}
 
-\item{formulae}{a lit of formulae with all the columns used}
+\item{formulae}{a list of formulae with all the columns used}
 }
 \value{
 a function that returns a dataset for inputs between \code{1:max_n}

@@ -25,3 +25,4 @@ a theme
 \description{
 Make the legend smaller
 }
+\keyword{internal}
