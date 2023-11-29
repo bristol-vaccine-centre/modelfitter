@@ -30,7 +30,14 @@ format_ci(
 
 \item{fn}{a function to format each number}
 
-\item{...}{passed to \code{fn} as additional parameters (see \code{format_ratio()} for the defaults)}
+\item{...}{
+  Arguments passed on to \code{\link[=format_ratio]{format_ratio}}
+  \describe{
+    \item{\code{x}}{a vector of numbers}
+    \item{\code{fmt.ratio}}{a sprintf format string}
+    \item{\code{max.ratio}}{a max ratio after which to display as e.g. \verb{>50} or \verb{<0.02}}
+    \item{\code{na.ratio}}{a symbol in case the value is \code{NA}.}
+  }}
 }
 \value{
 a formatted CI string

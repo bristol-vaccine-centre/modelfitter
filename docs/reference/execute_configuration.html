@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">modelfitter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9012</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9027</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -120,23 +120,29 @@ of them or whatever else the model decides to name it's coefficients.</p></dd>
 <span class="r-in"><span><span class="va">tmp</span> <span class="op">=</span> <span class="fu"><a href="configure_model.html">configure_model</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="st">"Iris"</span>, <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">Species</span> <span class="op">==</span> <span class="st">"versicolor"</span><span class="op">)</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">iris</span>, <span class="va">logistic_regression</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">tmp2</span> <span class="op">=</span> <span class="va">tmp</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">execute_configuration</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> caching item: ~/.cache/modelfitter/cached-863d9950a7be3e5055475c3a104cdcf4-49c5c43a94b1c2ec921e31249e7e2a58.rda</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> caching item: ~/.cache/modelfitter/cached-7ee20ca4c523103b2fe5534cbeca6990-81eb709f281fe75d1a492a891145bf7b.rda</span>
 <span class="r-in"><span> </span></span>
 <span class="r-in"><span><span class="va">tmp3</span>  <span class="op">=</span> <span class="fu"><a href="configure_models.html">configure_models</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>   <span class="fu"><a href="formula_provider.html">formula_provider</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>      <span class="st">"&lt;F"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">color</span> <span class="op">&lt;</span> <span class="st">"F"</span><span class="op">)</span> <span class="op">~</span> <span class="va">cut</span> <span class="op">+</span> <span class="va">carat</span> <span class="op">+</span> <span class="va">clarity</span> <span class="op">+</span> <span class="va">price</span>,</span></span>
 <span class="r-in"><span>      <span class="st">"&lt;H"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">color</span> <span class="op">&lt;</span> <span class="st">"H"</span><span class="op">)</span> <span class="op">~</span> <span class="va">cut</span> <span class="op">+</span> <span class="va">carat</span> <span class="op">+</span> <span class="va">clarity</span> <span class="op">+</span> <span class="va">price</span></span></span>
 <span class="r-in"><span>   <span class="op">)</span>,</span></span>
-<span class="r-in"><span>   <span class="fu"><a href="bootstrap_provider.html">bootstrap_provider</a></span><span class="op">(</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="va"><a href="https://ggplot2.tidyverse.org/reference/diamonds.html" class="external-link">diamonds</a></span>, max_n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>   <span class="fu"><a href="bootstrap_provider.html">bootstrap_provider</a></span><span class="op">(</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="va"><a href="https://ggplot2.tidyverse.org/reference/diamonds.html" class="external-link">diamonds</a></span>, max_n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>   <span class="fu"><a href="model_function_provider.html">model_function_provider</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>     <span class="st">"Log reg"</span> <span class="op">=</span> <span class="fu">modelfitter</span><span class="fu">::</span><span class="va"><a href="logistic_regression.html">logistic_regression</a></span>,</span></span>
 <span class="r-in"><span>     <span class="st">"Poisson"</span> <span class="op">=</span> <span class="fu">modelfitter</span><span class="fu">::</span><span class="va"><a href="quasi_poisson.html">quasi_poisson</a></span></span></span>
 <span class="r-in"><span>   <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in formula_provider(`&lt;F` = I(color &lt; "F") ~ cut + carat + clarity +     price, `&lt;H` = I(color &lt; "H") ~ cut + carat + clarity + price):</span> could not find function "formula_provider"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">tmp4</span> <span class="op">=</span> <span class="va">tmp3</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">execute_configuration</span><span class="op">(</span>cache <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'tmp3' not found</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> caching item: ~/.cache/modelfitter/cached-7ee20ca4c523103b2fe5534cbeca6990-8e527bf9579174643babc6f473d5732f.rda</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fitting models <span style="color: #00BB00;">■■■■■                           </span>  12% | ETA:  9s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fitting models <span style="color: #00BB00;">■■■■■■■■■                       </span>  28% | ETA: 23s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fitting models <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50% | ETA: 10s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fitting models <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■               </span>  52% | ETA: 14s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fitting models <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  72% | ETA:  6s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fitting models <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■        </span>  78% | ETA:  6s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Fitting models <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100% | ETA:  0s</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

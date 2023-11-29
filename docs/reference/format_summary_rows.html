@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">modelfitter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9012</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9027</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,14 +77,15 @@ can be joined to a model coefficients to</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">boot</span> <span class="op">=</span> <span class="fu"><a href="run_model.html">run_model</a></span><span class="op">(</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Disabling this example as function deprecated</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">boot</span> <span class="op">=</span> <span class="fu"><a href="run_model.html">run_model</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="va"><a href="https://ggplot2.tidyverse.org/reference/diamonds.html" class="external-link">diamonds</a></span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>cut <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">cut</span>, ordered<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>, </span></span>
 <span class="r-in"><span>  <span class="va">price</span> <span class="op">~</span> <span class="va">.</span>, </span></span>
 <span class="r-in"><span>  <span class="fu">stats</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in lifecycle::deprecate_soft("0.0.0.9011"):</span> argument "what" is missing, with no default</span>
 <span class="r-in"><span><span class="va">tmp</span> <span class="op">=</span> <span class="fu">format_summary_rows</span><span class="op">(</span><span class="va">boot</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in lifecycle::deprecate_soft("0.0.0.9011"):</span> argument "what" is missing, with no default</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
@@ -95,24 +96,11 @@ can be joined to a model coefficients to</p>
 <span class="r-in"><span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">color</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">format_summary_rows</span><span class="op">(</span><span class="va">diamonds2</span>, <span class="va">is_coloured</span> <span class="op">~</span> <span class="va">cut</span> <span class="op">+</span> <span class="va">carat</span> <span class="op">+</span> <span class="va">clarity</span><span class="op">*</span><span class="va">price</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in lifecycle::deprecate_soft("0.0.0.9011"):</span> argument "what" is missing, with no default</span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">=</span> <span class="fu"><a href="logistic_regression.html">logistic_regression</a></span><span class="op">(</span><span class="va">diamonds2</span>, <span class="va">is_coloured</span> <span class="op">~</span> <span class="va">cut</span> <span class="op">+</span> <span class="va">carat</span> <span class="op">+</span> <span class="va">clarity</span> <span class="op">*</span> <span class="va">price</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">=</span> <span class="fu"><a href="logistic_regression.html">logistic_regression</a></span><span class="op">(</span><span class="va">diamonds2</span>, <span class="va">is_coloured</span> <span class="op">~</span> <span class="va">cut</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">cut</span><span class="op">==</span><span class="st">"D"</span><span class="op">)</span> <span class="op">+</span> <span class="va">clarity</span><span class="op">*</span><span class="va">price</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       (Intercept)           cutGood      cutVery Good        cutPremium </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     -1.899078e-01      2.644440e-01      2.655568e-01      9.672590e-02 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          cutIdeal I(cut == "D")TRUE        claritySI2        claritySI1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      2.243786e-01                NA      5.508182e-01      4.440135e-01 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        clarityVS2        clarityVS1       clarityVVS2       clarityVVS1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      5.261397e-01     -1.463036e-01      6.243781e-02     -2.575117e-01 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         clarityIF             price  claritySI2:price  claritySI1:price </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     -8.898853e-01     -1.063789e-04      5.043942e-06     -1.832336e-07 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  clarityVS2:price  clarityVS1:price clarityVVS2:price clarityVVS1:price </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     -1.166712e-05      4.481136e-05      7.727660e-05      1.185510e-04 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   clarityIF:price </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      1.799989e-04 </span>
-<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

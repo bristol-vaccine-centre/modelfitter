@@ -23,6 +23,9 @@ can be joined to a model coefficients to
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 }
 \examples{
+# Disabling this example as function deprecated
+if (FALSE) {
+
 boot = run_model(
   ggplot2::diamonds \%>\% dplyr::mutate(cut = factor(cut, ordered=FALSE)), 
   price ~ ., 
@@ -43,6 +46,6 @@ model = logistic_regression(diamonds2, is_coloured ~ cut + carat + clarity * pri
 model = logistic_regression(diamonds2, is_coloured ~ cut + I(cut=="D") + clarity*price)
 
 stats::coef(model)
-
+}
 }
 \keyword{internal}

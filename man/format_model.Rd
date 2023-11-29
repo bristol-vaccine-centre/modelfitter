@@ -30,7 +30,7 @@ of metadata will be present if the table has been configured using
 \code{reference} - the referent status, \code{group.type}, \code{beta.lower},
 \code{beta.median}, \code{beta.upper}, \code{value.lower},
 \code{value.median}, \code{value.upper}, \code{p.value.mixture}, \code{global.p.mixture},
-\code{global.p.method}. The helper functions \code{format_ratio(x)} and \code{format_ci(med,low,hi,ref)}
+\code{global.p.method}. The helper functions \code{format_ratio(x,fmt.ratio = "\%1.3g")} and \code{format_ci(med,low,hi,ref)}
 may be useful in this glue string}
     \item{\code{p_format}}{a function (or lambda) converting a number into a p-value string}
     \item{\code{font_size}}{(optional) the font size for the table in points}
@@ -39,6 +39,11 @@ closest on your system)}
     \item{\code{footer_text}}{any text that needs to be added at the end of the table,
 setting this to FALSE dsables the whole footer (as does
 \code{options("tableone.hide_footer"=TRUE)}).}
+    \item{\code{summarise_fn}}{in the event that we want to present multiple models in
+the same column of a table it is possible that there are multiple entries
+for each variable. This function will combine them (at a text level) so they
+can be placed in a table. Examples could be \code{dplyr::first} or
+\code{~ paste0(.x,collapse="\\n")}}
   }}
 }
 \value{

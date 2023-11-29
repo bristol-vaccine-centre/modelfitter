@@ -43,7 +43,7 @@
 #' model_labels(model2, toupper, tolower)
 #' 
 #' model3 = stats::glm(is_coloured ~ carat + cut * clarity +  price, diamonds3, family="binomial")
-#' model_labels(model3, toupper, tolower) %>% view()
+#' model_labels(model3, toupper, tolower)
 #' 
 #' 
 #' model4 = stats::glm(
@@ -55,13 +55,13 @@
 #' coef(model4)
 #' model_labels(model4, toupper, tolower)
 #' 
-#' tmp = .ordered_contrasts(diamonds3)
-#' model5 = stats::glm(
-#'   is_coloured ~ cut + carat + clarity * price, 
-#'   diamonds3, 
-#'   family="binomial", contrasts=tmp)
-#'   
-#' model_labels(model5, toupper, tolower)
+#' # tmp = .ordered_contrasts(diamonds3, )
+#' # model5 = stats::glm(
+#' #   is_coloured ~ cut + carat + clarity * price, 
+#' #   diamonds3, 
+#' #   family="binomial", contrasts=tmp)
+#' #   
+#' # model_labels(model5, toupper, tolower)
 #' 
 #' model6 = stats::glm(
 #'   is_coloured ~ cut + carat + clarity + price_cat, 
@@ -156,7 +156,7 @@ model_labels = function(model, label_fn, subgroup_label_fn, ...) {
       stats::na.omit() %>% unique()
     
     # The bare term exists in the coeffients and no level is matched
-    if (length(nlevels)==0) {
+    if (length(nlevels) == 1 && nlevels == "") {
       # this controls how numeric levels are displayed
       tmp = tibble::tibble(
         group.term = n,
@@ -229,14 +229,14 @@ model_labels = function(model, label_fn, subgroup_label_fn, ...) {
     
     tmp = tmp %>% dplyr::mutate(
       subgroup.term = paste0(group.term,level.term),
-      group.label = col_labeller(group.term)
+      group.label = unlist(col_labeller(group.term))
     )
     
     return(tmp)
     
   })
   names(lvls) = mgroups
-  
+  # browser()
   components = dplyr::bind_rows(lvls)
   
   # This generates the possible set of model coefficients

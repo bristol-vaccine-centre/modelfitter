@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">modelfitter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9012</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9027</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -100,13 +100,11 @@
 <span class="r-in"><span>  `Adj Model 1` <span class="op">=</span> <span class="va">form</span>,</span></span>
 <span class="r-in"><span>  `Adj Model 2` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">form</span>, <span class="va">.</span> <span class="op">~</span> <span class="va">.</span> <span class="op">-</span> <span class="va">chl</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in formula_provider(Univariate = modelfitter::univariate_from_multivariate(form),     `Adj Model 1` = form, `Adj Model 2` = update(form, . ~ . -         chl), ):</span> could not find function "formula_provider"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">mfp</span> <span class="op">=</span> <span class="fu"><a href="model_function_provider.html">model_function_provider</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>   `Logistic` <span class="op">=</span> <span class="fu">modelfitter</span><span class="fu">::</span><span class="va"><a href="logistic_regression.html">logistic_regression</a></span>,</span></span>
 <span class="r-in"><span>   `Poisson` <span class="op">=</span> <span class="fu">modelfitter</span><span class="fu">::</span><span class="va"><a href="quasi_poisson.html">quasi_poisson</a></span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in model_function_provider(Logistic = modelfitter::logistic_regression,     Poisson = modelfitter::quasi_poisson):</span> could not find function "model_function_provider"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">ip</span> <span class="op">=</span> <span class="fu"><a href="imputation_provider.html">imputation_provider</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="fu">mice</span><span class="fu">::</span><span class="va"><a href="https://amices.org/mice/reference/nhanes2.html" class="external-link">nhanes2</a></span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>death<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span></span></span>
@@ -116,7 +114,6 @@
 <span class="r-in"><span>  hypertension <span class="op">=</span> <span class="va">hyp</span> <span class="op">~</span> <span class="va">.</span>,</span></span>
 <span class="r-in"><span>  death <span class="op">=</span> <span class="va">death</span> <span class="op">~</span> <span class="va">.</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in formula_provider(hypertension = hyp ~ ., death = death ~ .):</span> could not find function "formula_provider"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">dsp</span> <span class="op">=</span> <span class="fu"><a href="data_subset_provider.html">data_subset_provider</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  all <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
@@ -125,11 +122,21 @@
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">tmp</span> <span class="op">=</span> <span class="fu">configure_models</span><span class="op">(</span><span class="va">fp</span>, <span class="va">ip</span>, <span class="va">mfp</span>, <span class="va">dsp</span>, <span class="va">fup</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'fp' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rows: 60</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ model_base_name   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Adj Model 1", "Adj Model 1", "Adj Model 1", "Adj Mo…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ model_type_name   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Logistic", "Logistic", "Logistic", "Logistic", "Log…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ data_subset_name  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "all", "all", "hypertensives", "hypertensives", "non…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ model_update_name <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "death", "hypertension", "death", "hypertension", "d…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ data_subset_fn    <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> function (data) , data %&gt;% dplyr::ungroup() %&gt;% dpl…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ model_fn          <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> function (data, formula, positive = c("yes", "true"…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ n_boots           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, …</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ model_formula     <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> &lt;death ~ bmi + age + chl&gt;, &lt;hyp ~ bmi + age + chl&gt;,…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ model_name        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Adj Model 1 (death)\nLogistic", "Adj Model 1 (hyper…</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># the number of models to fit will be this:</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">$</span><span class="va">n_boots</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'tmp' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 600</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

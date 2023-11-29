@@ -28,7 +28,7 @@ format_ratio = function(x, fmt.ratio="%1.2f", max.ratio=50, na.ratio="Unk") {
 #' @param fmt.ci the layout of the 3 elements as a `sprintf` using `%s` for each element
 #' @param na.ci the value to show if the median ci is `NA`
 #' @param fn a function to format each number
-#' @param ... passed to `fn` as additional parameters (see `format_ratio()` for the defaults)
+#' @inheritDotParams format_ratio
 #'
 #' @return a formatted CI string
 #' @export
@@ -69,7 +69,7 @@ format_ci = function(median, lower, upper, is_reference_value = FALSE, fmt.ci = 
 #'   `reference` - the referent status, `group.type`, `beta.lower`,
 #'   `beta.median`, `beta.upper`, `value.lower`,
 #'   `value.median`, `value.upper`, `p.value.mixture`, `global.p.mixture`,
-#'   `global.p.method`. The helper functions `format_ratio(x)` and `format_ci(med,low,hi,ref)`
+#'   `global.p.method`. The helper functions `format_ratio(x,fmt.ratio = "%1.3g")` and `format_ci(med,low,hi,ref)`
 #'   may be useful in this glue string
 #' @param p_format a function (or lambda) converting a number into a p-value string
 #' @param font_size (optional) the font size for the table in points
@@ -78,7 +78,12 @@ format_ci = function(median, lower, upper, is_reference_value = FALSE, fmt.ci = 
 #' @param footer_text any text that needs to be added at the end of the table,
 #'   setting this to FALSE dsables the whole footer (as does
 #'   `options("tableone.hide_footer"=TRUE)`).
-#'
+#' @param summarise_fn in the event that we want to present multiple models in 
+#'   the same column of a table it is possible that there are multiple entries
+#'   for each variable. This function will combine them (at a text level) so they
+#'   can be placed in a table. Examples could be `dplyr::first` or 
+#'   `~ paste0(.x,collapse="\n")`
+#'   
 #' @return a huxtable tabular output of the model(s)
 #' @export
 #'
@@ -88,7 +93,7 @@ format_ci = function(median, lower, upper, is_reference_value = FALSE, fmt.ci = 
 #'       "<F" = I(color < "F") ~ cut + carat + clarity + price,
 #'       "<H" = I(color < "H") ~ cut + carat + clarity + price
 #'    ),
-#'    bootstrap_provider(ggplot2::diamonds, max_n = 100),
+#'    bootstrap_provider(ggplot2::diamonds, max_n = 10),
 #'    model_function_provider(
 #'      "Log reg" = modelfitter::logistic_regression,
 #'      "Poisson" = modelfitter::quasi_poisson
@@ -105,12 +110,13 @@ format_summary = function(
     statistic="OR", 
     global.p = getOption("modelfitter.global_p_values",TRUE), 
     inv_link = exp, 
-    col_header = "{model_name} (N={sprintf('%d',n_obs_summary)})",
-    row_design = "{format_ci(value.median,value.lower,value.upper,reference)}",
+    col_header = "{model_name} (N={sprintf('%d',max(n_obs_summary))})",
+    row_design = "{format_ci(value.median,value.lower,value.upper,reference,fmt.ratio = '%1.2g')}",
     p_format = NULL,
     font_size = getOption("modelfitter.font_size",8),
     font = getOption("modelfitter.font","Arial"),
-    footer_text = NULL
+    footer_text = NULL,
+    summarise_fn = NULL
 ) {
   
   # row design full config (not really needed I think):
@@ -128,7 +134,8 @@ format_summary = function(
     p_format = getOption("modelfitter.pvalue_formatter", scales::pvalue)
   }
   
-  
+  # TODO: need to get the statistic_name in here maybe based on "model_type_name"
+  # will need a user input mapping from type to statistic name.
   summfit = summfit %>% dplyr::mutate(col_head = glue::glue(col_header))
   
   # Get the model labels from the fit
@@ -148,6 +155,7 @@ format_summary = function(
         .combine_label_df(labels)
       )
   }
+  
   
   # get the link transform function
   inv_link = rlang::as_function(inv_link)
@@ -212,14 +220,64 @@ format_summary = function(
       fmt = list(dplyr::bind_rows(fmt))
     )
   
+  # browser()
+  
+  
+  # check for completeness in combinations of col_head, characterisitic, and subgroup
+  
+  # TODO: this is an incomplete solution. Better woudl be to order it based on the
+  # combination character and subgroup.
+  character_order = unique(unlist(purrr::map(table_data$fmt, ~.x %>% dplyr::pull(characteristic))))
+  subgroup_order = unique(unlist(purrr::map(table_data$fmt, ~.x %>% dplyr::pull(subgroup))))
+  
+  tmpy = table_data2 %>% tidyr::unnest(fmt) %>%
+    tidyr::complete(col_head,tidyr::nesting(characteristic, subgroup), fill = list(statistic = "\u2014", p_value = "\u2014")) %>%
+    dplyr::mutate(
+      characteristic = factor(characteristic, levels = character_order),
+      subgroup = factor(subgroup, levels = subgroup_order)
+    )
+  
+  # check for uniqueness in  combinations of col_head, characterisitic, and subgroup
+  unique = all((tmpy %>% dplyr::group_by(col_head,characteristic, subgroup) %>% 
+                  dplyr::count() %>% dplyr::pull(n)) == 1)
+  
+  if (!unique) {
+    message("There are more than one coefficients for some of the variables.")
+    if (is.null(summarise_fn)) stop(
+      "If this was intentional you must provide a `summarise_fn` parameter. eg. `dplyr::first`
+otherwise it may be your column naming does not uniquely identify the model in which 
+case updating `col_header` to include `{model_base_name}`,`{model_update_name}` and 
+`{model_type_name}` may help."
+    )
+    
+    summarise_fn = rlang::as_function(summarise_fn)
+    message("Summarising the result using the `summarise_fn` parameter")
+    tmpy = tmpy %>% dplyr::group_by(col_head,characteristic, subgroup) %>%
+      dplyr::summarise(dplyr::across(dplyr::everything(), summarise_fn))
+  }
+  
+  table_data2 = tmpy %>% tidyr::nest(fmt = c(-col_head))
+  
+  #TODO: this assumes that only one kind fo statistic can be 
+  # presented in a table. The example shows where this breaks.
+  # In reality we need to be able to map form col_head to the 
+  # statistic for that model.
   statistic_name = sprintf("%s [95%% CI]",statistic)
   chr_name = getOption("modelfitter.characteristic_column_name","Characteristic")
   subgrp_name = getOption("modelfitter.subgroup_column_name","Subgroup")
   pvalue_name = getOption("modelfitter.pvalue_column_namel","P value")
   
+  cgv = dplyr::vars(col_head)
+  # cgv = if (multiple) dplyr::vars(col_head) else dplyr::vars()
+  rgv = if (global.p) sapply(c(chr_name, pvalue_name, subgrp_name),as.symbol) 
+  else sapply(c(chr_name, subgrp_name),as.symbol)
+  dt_col = sapply(c(cgv,rgv),rlang::as_label)
+  
   out = table_data2 %>% 
     dplyr::select(c(col_head,fmt)) %>%
     dplyr::mutate(hux = purrr::map2(col_head, fmt, function(.x,.y) {
+      
+      # browser()
       
       .y = .y %>% dplyr::select(
         !!chr_name := characteristic,
@@ -233,14 +291,7 @@ format_summary = function(
         col_head = .x
       )
       
-      cgv = dplyr::vars(col_head)
-      # cgv = if (multiple) dplyr::vars(col_head) else dplyr::vars()
-      rgv = if (global.p) sapply(c(chr_name, pvalue_name, subgrp_name),as.symbol) 
-      else sapply(c(chr_name, subgrp_name),as.symbol)
-      
-      # TODO: there is still a possibliity that the characteristics from two models 
-      # aligned into the same column collide. Some form of sensitible error reporting
-      # here would be useful beyond hux_tidys you've done something wrong.
+      # create the table for each col head
       
       tmp = .y %>% dplyr::ungroup() %>% .hux_tidy(
         rowGroupVars = rgv,

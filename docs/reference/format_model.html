@@ -16,7 +16,7 @@ is more or less what gtsummary does."><!-- mathjax --><script src="https://cdnjs
     
     <a class="navbar-brand me-2" href="../index.html">modelfitter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9012</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9027</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,7 +44,7 @@ is more or less what gtsummary does."><!-- mathjax --><script src="https://cdnjs
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Generate a table for a single model output</h1>
-      <small class="dont-index">Source: <a href="https://github.com/bristol-vaccine-centre/modelfitter/blob/HEAD/R/execution.R" class="external-link"><code>R/execution.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bristol-vaccine-centre/modelfitter/blob/HEAD/R/format-output.R" class="external-link"><code>R/format-output.R</code></a></small>
       <div class="d-none name"><code>format_model.Rd</code></div>
     </div>
 
@@ -98,7 +98,7 @@ of metadata will be present if the table has been configured using
 <code>reference</code> - the referent status, <code>group.type</code>, <code>beta.lower</code>,
 <code>beta.median</code>, <code>beta.upper</code>, <code>value.lower</code>,
 <code>value.median</code>, <code>value.upper</code>, <code>p.value.mixture</code>, <code>global.p.mixture</code>,
-<code>global.p.method</code>. The helper functions <code>format_ratio(x)</code> and <code>format_ci(med,low,hi,ref)</code>
+<code>global.p.method</code>. The helper functions <code>format_ratio(x,fmt.ratio = "%1.3g")</code> and <code>format_ci(med,low,hi,ref)</code>
 may be useful in this glue string</p></dd>
 
     <dt><code>p_format</code></dt>
@@ -116,6 +116,13 @@ closest on your system)</p></dd>
 setting this to FALSE dsables the whole footer (as does
 <code>options("tableone.hide_footer"=TRUE)</code>).</p></dd>
 
+    <dt><code>summarise_fn</code></dt>
+<dd><p>in the event that we want to present multiple models in
+the same column of a table it is possible that there are multiple entries
+for each variable. This function will combine them (at a text level) so they
+can be placed in a table. Examples could be <code><a href="https://dplyr.tidyverse.org/reference/nth.html" class="external-link">dplyr::first</a></code> or
+<code>~ paste0(.x,collapse="\n")</code></p></dd>
+
   
 </dl></dd>
 
@@ -131,9 +138,25 @@ setting this to FALSE dsables the whole footer (as does
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">coxfit</span> <span class="op">=</span> <span class="fu"><a href="cox_model.html">cox_model</a></span><span class="op">(</span><span class="fu">survival</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/survival/man/flchain.html" class="external-link">flchain</a></span>, <span class="fu">survival</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span><span class="va">futime</span>, <span class="va">death</span><span class="op">)</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">*</span> <span class="va">age</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">format_model</span><span class="op">(</span><span class="st">"FLChain"</span>, <span class="va">coxfit</span>, <span class="st">"HR"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in map2(.x, vec_index(.x), .f, ...):</span> <span style="color: #00BBBB;">ℹ</span> In index: 1.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Caused by error in `.f()`:</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> argument "label_fn" is missing, with no default</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Quosure lists can't be concatenated with objects other than quosures as of</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> rlang 0.3.0. Please call `as.list()` on the quosure list first.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            ─────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                          FLChain (N=2169)           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              Characteristic   Subgroup   HR [95% CI]       P value  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            ─────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              sex              F          ref               &lt;0.001   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                               M          2.5 [1.3 – 4.7]            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            ─────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              age                         1.1 [1.1 – 1.1]   &lt;0.001   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            ─────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              sex &amp; age        F:age      —                 0.116    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                               M:age      0.99 [0.98 – 1]            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            ─────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              P values calculated using Likelihood ratio             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              test (II)                                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Column names: Characteristic, Subgroup, 1, P value</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

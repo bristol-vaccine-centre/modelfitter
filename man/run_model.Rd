@@ -34,7 +34,7 @@ a dataframe with result of running all formulae on all bootstrapped imputations 
 \examples{
 # stats::lm( Petal.Length ~ Species + Petal.Width, iris)
 
-boots = iris \%>\% run_model(Petal.Length ~ Species + Petal.Width, stats::lm)
+# boots = iris \%>\% run_model(Petal.Length ~ Species + Petal.Width, stats::lm)
 
 }
 \keyword{internal}

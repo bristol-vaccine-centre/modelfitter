@@ -53,7 +53,7 @@ model2 = logistic_regression(diamonds3, is_coloured ~ I(cut=="Good") + carat + c
 model_labels(model2, toupper, tolower)
 
 model3 = stats::glm(is_coloured ~ carat + cut * clarity +  price, diamonds3, family="binomial")
-model_labels(model3, toupper, tolower) \%>\% view()
+model_labels(model3, toupper, tolower)
 
 
 model4 = stats::glm(
@@ -65,13 +65,13 @@ model4 = stats::glm(
 coef(model4)
 model_labels(model4, toupper, tolower)
 
-tmp = .ordered_contrasts(diamonds3)
-model5 = stats::glm(
-  is_coloured ~ cut + carat + clarity * price, 
-  diamonds3, 
-  family="binomial", contrasts=tmp)
-  
-model_labels(model5, toupper, tolower)
+# tmp = .ordered_contrasts(diamonds3, )
+# model5 = stats::glm(
+#   is_coloured ~ cut + carat + clarity * price, 
+#   diamonds3, 
+#   family="binomial", contrasts=tmp)
+#   
+# model_labels(model5, toupper, tolower)
 
 model6 = stats::glm(
   is_coloured ~ cut + carat + clarity + price_cat, 

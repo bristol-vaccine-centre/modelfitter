@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">modelfitter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9012</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9027</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Format a summary of multiple fits into a table.</h1>
-      <small class="dont-index">Source: <a href="https://github.com/bristol-vaccine-centre/modelfitter/blob/HEAD/R/execution.R" class="external-link"><code>R/execution.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bristol-vaccine-centre/modelfitter/blob/HEAD/R/format-output.R" class="external-link"><code>R/format-output.R</code></a></small>
       <div class="d-none name"><code>format_summary.Rd</code></div>
     </div>
 
@@ -54,12 +54,14 @@
 <span>  statistic <span class="op">=</span> <span class="st">"OR"</span>,</span>
 <span>  global.p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"modelfitter.global_p_values"</span>, <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>  inv_link <span class="op">=</span> <span class="va">exp</span>,</span>
-<span>  col_header <span class="op">=</span> <span class="st">"{model_name} (N={sprintf('%d',n_obs_summary)})"</span>,</span>
-<span>  row_design <span class="op">=</span> <span class="st">"{format_ci(value.median,value.lower,value.upper,reference)}"</span>,</span>
+<span>  col_header <span class="op">=</span> <span class="st">"{model_name} (N={sprintf('%d',max(n_obs_summary))})"</span>,</span>
+<span>  row_design <span class="op">=</span></span>
+<span>    <span class="st">"{format_ci(value.median,value.lower,value.upper,reference,fmt.ratio = '%1.2g')}"</span>,</span>
 <span>  p_format <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  font_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"modelfitter.font_size"</span>, <span class="fl">8</span><span class="op">)</span>,</span>
 <span>  font <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"modelfitter.font"</span>, <span class="st">"Arial"</span><span class="op">)</span>,</span>
-<span>  footer_text <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  footer_text <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  summarise_fn <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -115,7 +117,7 @@ of metadata will be present if the table has been configured using
 <code>reference</code> - the referent status, <code>group.type</code>, <code>beta.lower</code>,
 <code>beta.median</code>, <code>beta.upper</code>, <code>value.lower</code>,
 <code>value.median</code>, <code>value.upper</code>, <code>p.value.mixture</code>, <code>global.p.mixture</code>,
-<code>global.p.method</code>. The helper functions <code>format_ratio(x)</code> and <code>format_ci(med,low,hi,ref)</code>
+<code>global.p.method</code>. The helper functions <code>format_ratio(x,fmt.ratio = "%1.3g")</code> and <code>format_ci(med,low,hi,ref)</code>
 may be useful in this glue string</p></dd>
 
 
@@ -137,6 +139,14 @@ closest on your system)</p></dd>
 setting this to FALSE dsables the whole footer (as does
 <code>options("tableone.hide_footer"=TRUE)</code>).</p></dd>
 
+
+<dt>summarise_fn</dt>
+<dd><p>in the event that we want to present multiple models in
+the same column of a table it is possible that there are multiple entries
+for each variable. This function will combine them (at a text level) so they
+can be placed in a table. Examples could be <code><a href="https://dplyr.tidyverse.org/reference/nth.html" class="external-link">dplyr::first</a></code> or
+<code>~ paste0(.x,collapse="\n")</code></p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -152,22 +162,76 @@ setting this to FALSE dsables the whole footer (as does
 <span class="r-in"><span>      <span class="st">"&lt;F"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">color</span> <span class="op">&lt;</span> <span class="st">"F"</span><span class="op">)</span> <span class="op">~</span> <span class="va">cut</span> <span class="op">+</span> <span class="va">carat</span> <span class="op">+</span> <span class="va">clarity</span> <span class="op">+</span> <span class="va">price</span>,</span></span>
 <span class="r-in"><span>      <span class="st">"&lt;H"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">color</span> <span class="op">&lt;</span> <span class="st">"H"</span><span class="op">)</span> <span class="op">~</span> <span class="va">cut</span> <span class="op">+</span> <span class="va">carat</span> <span class="op">+</span> <span class="va">clarity</span> <span class="op">+</span> <span class="va">price</span></span></span>
 <span class="r-in"><span>   <span class="op">)</span>,</span></span>
-<span class="r-in"><span>   <span class="fu"><a href="bootstrap_provider.html">bootstrap_provider</a></span><span class="op">(</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="va"><a href="https://ggplot2.tidyverse.org/reference/diamonds.html" class="external-link">diamonds</a></span>, max_n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>   <span class="fu"><a href="bootstrap_provider.html">bootstrap_provider</a></span><span class="op">(</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="va"><a href="https://ggplot2.tidyverse.org/reference/diamonds.html" class="external-link">diamonds</a></span>, max_n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>   <span class="fu"><a href="model_function_provider.html">model_function_provider</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>     <span class="st">"Log reg"</span> <span class="op">=</span> <span class="fu">modelfitter</span><span class="fu">::</span><span class="va"><a href="logistic_regression.html">logistic_regression</a></span>,</span></span>
 <span class="r-in"><span>     <span class="st">"Poisson"</span> <span class="op">=</span> <span class="fu">modelfitter</span><span class="fu">::</span><span class="va"><a href="quasi_poisson.html">quasi_poisson</a></span></span></span>
 <span class="r-in"><span>   <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in formula_provider(`&lt;F` = I(color &lt; "F") ~ cut + carat + clarity +     price, `&lt;H` = I(color &lt; "H") ~ cut + carat + clarity + price):</span> could not find function "formula_provider"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">exectn</span> <span class="op">=</span> <span class="va">cfg</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="execute_configuration.html">execute_configuration</a></span><span class="op">(</span>cache <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'cfg' not found</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> using cached item: ~/.cache/modelfitter/cached-7ee20ca4c523103b2fe5534cbeca6990-8e527bf9579174643babc6f473d5732f.rda</span>
 <span class="r-in"><span><span class="va">summfit</span> <span class="op">=</span> <span class="va">exectn</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="summarise_fits.html">summarise_fits</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'exectn' not found</span>
 <span class="r-in"><span><span class="va">hux</span> <span class="op">=</span> <span class="va">summfit</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">format_summary</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'summfit' not found</span>
 <span class="r-in"><span><span class="va">hux</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'hux' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ────────────────────────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           &lt;F                   &lt;F                   &lt;H        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           Log reg              Poisson              Log reg   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           (N=53940)            (N=53940)            (N=53940  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                     )         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Characte   Subgroup   OR [95%    P value   OR [95%    P value   OR [95%   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     ristic                CI]                  CI]                  CI]       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ────────────────────────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     cut        Fair       ref        &lt;0.001    ref        &lt;0.001    ref       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                Good       0.98                 0.98                 0.66      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           [0.81 –              [0.87 –              [0.54 –   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           1.2]                 1.1]                 0.83]     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                Very       0.93                 0.96                 0.55      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                Good       [0.79 –              [0.86 –              [0.43 –   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           1.1]                 1.1]                 0.66]     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                Premium    0.75                 0.84                 0.52      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           [0.64 –              [0.75 –              [0.43 –   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           0.9]                 0.94]                0.65]     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                Ideal      0.79                 0.87                 0.46      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           [0.67 –              [0.78 –              [0.38 –   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           0.92]                0.96]                0.56]     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ────────────────────────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     carat                 &lt;0.02      &lt;0.001    0.03       &lt;0.001    &lt;0.02     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           [&lt;0.02 –             [0.027 –             [&lt;0.02 –  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           &lt;0.02]               0.033]               &lt;0.02]    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ────────────────────────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     clarity    I1         ref        &lt;0.001    ref        &lt;0.001    ref       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                SI2        0.79                 0.91                 0.17      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           [0.57 –              [0.75 –              [0.11 –   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           1]                   1.1]                 0.26]     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                SI1        0.4                  0.63                 0.049     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           [0.29 –              [0.51 –              [0.032 –  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           0.53]                0.75]                0.077]    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                VS2        0.25                 0.48                 0.032     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           [0.18 –              [0.4 –               [0.02 –   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           0.33]                0.58]                0.051]    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                VS1        0.13                 0.32                 &lt;0.02     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           [0.093 –             [0.26 –              [&lt;0.02 –  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           0.17]                0.38]                0.033]    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                VVS2       0.12                 0.31                 &lt;0.02     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           [0.086 –             [0.25 –              [&lt;0.02 –  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           0.16]                0.37]                0.033]    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                VVS1       0.077                0.23                 &lt;0.02     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           [0.057 –             [0.19 –              [&lt;0.02 –  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           0.1]                 0.28]                &lt;0.02]    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                IF         0.026                0.097                &lt;0.02     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           [&lt;0.02 –             [0.077 –             [&lt;0.02 –  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           0.037]               0.12]                &lt;0.02]    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ────────────────────────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     price                 1 [1 –     &lt;0.001    1 [1 –     &lt;0.001    1 [1 –    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           1]                   1]                   1]        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ────────────────────────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     P values calculated using Likelihood ratio test (II)                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Column names: Characteristic, Subgroup, 1, P value, 1.1, P value.1, 1.2, P</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> value.2, 1.3, P value.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7/10 columns shown.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

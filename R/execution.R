@@ -37,7 +37,7 @@
 #'       "<F" = I(color < "F") ~ cut + carat + clarity + price,
 #'       "<H" = I(color < "H") ~ cut + carat + clarity + price
 #'    ),
-#'    bootstrap_provider(ggplot2::diamonds, max_n = 100),
+#'    bootstrap_provider(ggplot2::diamonds, max_n = 10),
 #'    model_function_provider(
 #'      "Log reg" = modelfitter::logistic_regression,
 #'      "Poisson" = modelfitter::quasi_poisson
@@ -104,7 +104,7 @@ execute_configuration = function(cfg, retain_fit = sum(cfg$n_boots)<50, performa
       return(structure(tmp, "labels" = ml))
       
     })
-  ), cfg, .nocache = !cache)
+  ), .config_hash(cfg), .nocache = !cache)
   
   cli::cli_progress_done(id = pid)
   

@@ -12,6 +12,9 @@
 #' @keywords internal
 #' @export
 #' @examples
+#' # Disabling this example as function deprecated
+#' if (FALSE) {
+#' 
 #' boot = run_model(
 #'   ggplot2::diamonds %>% dplyr::mutate(cut = factor(cut, ordered=FALSE)), 
 #'   price ~ ., 
@@ -32,10 +35,10 @@
 #' model = logistic_regression(diamonds2, is_coloured ~ cut + I(cut=="D") + clarity*price)
 #' 
 #' stats::coef(model)
-#' 
+#' }
 format_summary_rows = function(rawData, ..., label_fn = ~ .x) {
   
-  lifecycle::deprecate_soft("0.0.0.9011")
+  lifecycle::deprecate_soft("0.0.0.9011", "format_summary_rows()")
   
   predictorVars = .predictorVars(rawData, ...)
   if (inherits(rawData,"modelfit")) {
@@ -133,7 +136,7 @@ format_summary_rows = function(rawData, ..., label_fn = ~ .x) {
 #' @export
 impute_data = function(rawData, ..., m=getOption("tableone.imputations",10)) {
   
-  lifecycle::deprecate_soft("0.0.0.9011")
+  lifecycle::deprecate_soft("0.0.0.9011", "impute_data()")
   
   predictorVars = .parse_unique(rawData, ..., .side="rhs") %>% .sort_symbols()
   imputeModel = .cached({
@@ -176,11 +179,11 @@ impute_data = function(rawData, ..., m=getOption("tableone.imputations",10)) {
 #' @examples
 #' # stats::lm( Petal.Length ~ Species + Petal.Width, iris)
 #' 
-#' boots = iris %>% run_model(Petal.Length ~ Species + Petal.Width, stats::lm)
+#' # boots = iris %>% run_model(Petal.Length ~ Species + Petal.Width, stats::lm)
 #' 
 run_model = function(data, formula, modelFunction = logistic_regression, ..., modelName = .fmt_form(formula)) {
   
-  lifecycle::deprecate_soft("0.0.0.9011")
+  lifecycle::deprecate_soft("0.0.0.9011", "run_model()")
   
   if (rlang::is_formula(formula)) formula = list(formula)
   modelConfig = tibble::tibble(form = formula, modelName = modelName)
@@ -210,7 +213,7 @@ run_model = function(data, formula, modelFunction = logistic_regression, ..., mo
 #' @export
 run_models = function(imputedData, modelConfig, modelFunction = logistic_regression, pipeline = ~ .x, ...) {
   
-  lifecycle::deprecate_soft("0.0.0.9011")
+  lifecycle::deprecate_soft("0.0.0.9011", "run_models()")
   
   modelConfig = modelConfig %>% 
     dplyr::mutate(
@@ -331,11 +334,11 @@ run_models = function(imputedData, modelConfig, modelFunction = logistic_regress
 #' @return a collapsed summary of all bootstraps
 #' @export
 #' @examples
-#' boots = iris %>% run_model(Petal.Length ~ Species + Petal.Width, stats::lm)
-#' combine_boots(boots,  inv_link = ~ .x)
+#' # boots = iris %>% run_model(Petal.Length ~ Species + Petal.Width, stats::lm)
+#' # combine_boots(boots,  inv_link = ~ .x)
 combine_boots = function(boots,..., inv_link = exp) {
   
-  lifecycle::deprecate_soft("0.0.0.9011")
+  lifecycle::deprecate_soft("0.0.0.9011", "combine_boots()")
   
   inv_link = rlang::as_function(inv_link)
   keys = format_summary_rows(boots, ...)
@@ -405,18 +408,18 @@ combine_boots = function(boots,..., inv_link = exp) {
 #' @export
 #' @examples 
 #' # out = boots %>% summarise_boots(...predictors..., "OR" )
-#' boot = iris %>% 
-#'   dplyr::mutate(is_versicolor = Species == "versicolor") %>% 
-#'   run_model(is_versicolor ~ Petal.Length + Petal.Width + Sepal.Length + Sepal.Width)
-#'   
-#' out = summarise_boots(boot)
-#' #out %>% ggrrr::hux_tidy(
+#' #  boot = iris %>% 
+#' #   dplyr::mutate(is_versicolor = Species == "versicolor") %>% 
+#' #   run_model(is_versicolor ~ Petal.Length + Petal.Width + Sepal.Length + Sepal.Width)
+#' #   
+#' #  out = summarise_boots(boot)
+#' #  out %>% ggrrr::hux_tidy(
 #' #    rowGroupVars = dplyr::vars(Characteristic,Group),
 #' #    colGroupVars = dplyr::vars(modelName)
-#' #)
+#' #  )
 summarise_boots = function(boots, ..., statistic="OR",global.p=TRUE, inv_link = NULL) {
   
-  lifecycle::deprecate_soft("0.0.0.9011")
+  lifecycle::deprecate_soft("0.0.0.9011", "summarise_boots()")
   
   if (is.null(inv_link)) {
     if (statistic %in% c("OR","RR","HR")) {
@@ -502,7 +505,7 @@ summarise_boots = function(boots, ..., statistic="OR",global.p=TRUE, inv_link = 
 #' #  )
 analyse_performance = function(boots, statistics = c("AIC","BIC","R2_Tjur","R2_Nagelkerke","RMSE","Sigma")) {
   
-  lifecycle::deprecate_soft("0.0.0.9011")
+  lifecycle::deprecate_soft("0.0.0.9011", "analyse_performance()")
   
   pooled.performance = .pool_performance(boots, statistics)
 }
@@ -533,7 +536,7 @@ analyse_performance = function(boots, statistics = c("AIC","BIC","R2_Tjur","R2_N
 #' @export
 plot_regression = function(boots, facet = NULL, stat_label="Odds Ratio", report_fit = FALSE, limit = c(NA,NA), p.component=FALSE, label_fn = ~ .x) {
   
-  lifecycle::deprecate_soft("0.0.0.9011")
+  lifecycle::deprecate_soft("0.0.0.9011", "plot_regression()")
   
   facet = tryCatch(rlang::ensym(facet), error = function(e) NULL)
   facets = list(facet)

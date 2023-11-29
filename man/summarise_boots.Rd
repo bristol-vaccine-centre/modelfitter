@@ -25,14 +25,14 @@ a printable summary
 }
 \examples{
 # out = boots \%>\% summarise_boots(...predictors..., "OR" )
-boot = iris \%>\% 
-  dplyr::mutate(is_versicolor = Species == "versicolor") \%>\% 
-  run_model(is_versicolor ~ Petal.Length + Petal.Width + Sepal.Length + Sepal.Width)
-  
-out = summarise_boots(boot)
-#out \%>\% ggrrr::hux_tidy(
+#  boot = iris \%>\% 
+#   dplyr::mutate(is_versicolor = Species == "versicolor") \%>\% 
+#   run_model(is_versicolor ~ Petal.Length + Petal.Width + Sepal.Length + Sepal.Width)
+#   
+#  out = summarise_boots(boot)
+#  out \%>\% ggrrr::hux_tidy(
 #    rowGroupVars = dplyr::vars(Characteristic,Group),
 #    colGroupVars = dplyr::vars(modelName)
-#)
+#  )
 }
 \keyword{internal}

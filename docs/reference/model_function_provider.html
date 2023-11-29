@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">modelfitter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9012</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9027</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,33 +64,45 @@ the functions must accept <code>data</code> as first parameter and <code>formula
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># in the simplest version the name is pulled from the input</span></span></span>
 <span class="r-in"><span><span class="va">mfp</span> <span class="op">=</span> <span class="fu">model_function_provider</span><span class="op">(</span><span class="va">logistic_regression</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in model_function_provider(logistic_regression):</span> could not find function "model_function_provider"</span>
 <span class="r-in"><span><span class="va">mfp</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'mfp' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function (name) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (rlang::is_missing(name)) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         return(names(dots))</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     tmp = .check_index(dots, name, "model_function_provider")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     return(tmp)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55d290402940&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55d2bb4b9608&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "provider" "function"</span>
 <span class="r-in"><span><span class="fu">mfp</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in mfp():</span> could not find function "mfp"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "logistic_regression"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">mfp</span> <span class="op">=</span> <span class="fu">model_function_provider</span><span class="op">(</span><span class="va">logistic_regression</span>, <span class="va">quasi_poisson</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in model_function_provider(logistic_regression, quasi_poisson):</span> could not find function "model_function_provider"</span>
 <span class="r-in"><span><span class="fu">mfp</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in mfp():</span> could not find function "mfp"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "logistic_regression" "quasi_poisson"      </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">mfp2</span> <span class="op">=</span> <span class="fu">model_function_provider</span><span class="op">(</span></span></span>
 <span class="r-in"><span>   Logistic <span class="op">=</span> <span class="fu">modelfitter</span><span class="fu">::</span><span class="va"><a href="logistic_regression.html">logistic_regression</a></span>,</span></span>
 <span class="r-in"><span>   Poisson <span class="op">=</span> <span class="fu">modelfitter</span><span class="fu">::</span><span class="va"><a href="quasi_poisson.html">quasi_poisson</a></span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in model_function_provider(Logistic = modelfitter::logistic_regression,     Poisson = modelfitter::quasi_poisson):</span> could not find function "model_function_provider"</span>
 <span class="r-in"><span><span class="fu">mfp2</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in mfp2():</span> could not find function "mfp2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Logistic" "Poisson" </span>
 <span class="r-in"><span> </span></span>
 <span class="r-in"><span><span class="co"># the functions are named the other way round to normal model functions</span></span></span>
 <span class="r-in"><span><span class="co"># this was by design to fit into a tidy pipeline:</span></span></span>
 <span class="r-in"><span><span class="va">mfp</span> <span class="op">=</span> <span class="fu">model_function_provider</span><span class="op">(</span>linear <span class="op">=</span> <span class="op">~</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">.y</span>,<span class="va">.x</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in model_function_provider(linear = ~stats::lm(.y, .x)):</span> could not find function "model_function_provider"</span>
 <span class="r-in"><span><span class="va">linear_model</span> <span class="op">=</span> <span class="fu">mfp</span><span class="op">(</span><span class="st">"linear"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in mfp("linear"):</span> could not find function "mfp"</span>
 <span class="r-in"><span><span class="va">iris</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">linear_model</span><span class="op">(</span><span class="va">Petal.Length</span> <span class="op">~</span> <span class="va">Petal.Width</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in linear_model(., Petal.Length ~ Petal.Width):</span> could not find function "linear_model"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> stats::lm(formula = .y, data = .x)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  Petal.Width  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       1.084        2.230  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -10,12 +10,14 @@ format_summary(
   statistic = "OR",
   global.p = getOption("modelfitter.global_p_values", TRUE),
   inv_link = exp,
-  col_header = "{model_name} (N={sprintf('\%d',n_obs_summary)})",
-  row_design = "{format_ci(value.median,value.lower,value.upper,reference)}",
+  col_header = "{model_name} (N={sprintf('\%d',max(n_obs_summary))})",
+  row_design =
+    "{format_ci(value.median,value.lower,value.upper,reference,fmt.ratio = '\%1.2g')}",
   p_format = NULL,
   font_size = getOption("modelfitter.font_size", 8),
   font = getOption("modelfitter.font", "Arial"),
-  footer_text = NULL
+  footer_text = NULL,
+  summarise_fn = NULL
 )
 }
 \arguments{
@@ -52,7 +54,7 @@ of metadata will be present if the table has been configured using
 \code{reference} - the referent status, \code{group.type}, \code{beta.lower},
 \code{beta.median}, \code{beta.upper}, \code{value.lower},
 \code{value.median}, \code{value.upper}, \code{p.value.mixture}, \code{global.p.mixture},
-\code{global.p.method}. The helper functions \code{format_ratio(x)} and \code{format_ci(med,low,hi,ref)}
+\code{global.p.method}. The helper functions \code{format_ratio(x,fmt.ratio = "\%1.3g")} and \code{format_ci(med,low,hi,ref)}
 may be useful in this glue string}
 
 \item{p_format}{a function (or lambda) converting a number into a p-value string}
@@ -65,6 +67,12 @@ closest on your system)}
 \item{footer_text}{any text that needs to be added at the end of the table,
 setting this to FALSE dsables the whole footer (as does
 \code{options("tableone.hide_footer"=TRUE)}).}
+
+\item{summarise_fn}{in the event that we want to present multiple models in
+the same column of a table it is possible that there are multiple entries
+for each variable. This function will combine them (at a text level) so they
+can be placed in a table. Examples could be \code{dplyr::first} or
+\code{~ paste0(.x,collapse="\\n")}}
 }
 \value{
 a huxtable tabular output of the model(s)
@@ -78,7 +86,7 @@ cfg  = configure_models(
       "<F" = I(color < "F") ~ cut + carat + clarity + price,
       "<H" = I(color < "H") ~ cut + carat + clarity + price
    ),
-   bootstrap_provider(ggplot2::diamonds, max_n = 100),
+   bootstrap_provider(ggplot2::diamonds, max_n = 10),
    model_function_provider(
      "Log reg" = modelfitter::logistic_regression,
      "Poisson" = modelfitter::quasi_poisson

@@ -18,7 +18,7 @@ metrics for each different model."><!-- mathjax --><script src="https://cdnjs.cl
     
     <a class="navbar-brand me-2" href="../index.html">modelfitter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9012</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9027</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,7 +46,7 @@ metrics for each different model."><!-- mathjax --><script src="https://cdnjs.cl
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Summarise a modelfitter execution</h1>
-      <small class="dont-index">Source: <a href="https://github.com/bristol-vaccine-centre/modelfitter/blob/HEAD/R/execution.R" class="external-link"><code>R/execution.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bristol-vaccine-centre/modelfitter/blob/HEAD/R/summarisation.R" class="external-link"><code>R/summarisation.R</code></a></small>
       <div class="d-none name"><code>summarise_fits.Rd</code></div>
     </div>
 
@@ -98,24 +98,22 @@ are given as means of the values of bootstrap.</p>
 <span class="r-in"><span>      <span class="st">"&lt;F"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">color</span> <span class="op">&lt;</span> <span class="st">"F"</span><span class="op">)</span> <span class="op">~</span> <span class="va">cut</span> <span class="op">+</span> <span class="va">carat</span> <span class="op">+</span> <span class="va">clarity</span> <span class="op">+</span> <span class="va">price</span>,</span></span>
 <span class="r-in"><span>      <span class="st">"&lt;H"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">color</span> <span class="op">&lt;</span> <span class="st">"H"</span><span class="op">)</span> <span class="op">~</span> <span class="va">cut</span> <span class="op">+</span> <span class="va">carat</span> <span class="op">+</span> <span class="va">clarity</span> <span class="op">+</span> <span class="va">price</span></span></span>
 <span class="r-in"><span>   <span class="op">)</span>,</span></span>
-<span class="r-in"><span>   <span class="fu"><a href="bootstrap_provider.html">bootstrap_provider</a></span><span class="op">(</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="va"><a href="https://ggplot2.tidyverse.org/reference/diamonds.html" class="external-link">diamonds</a></span>, max_n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>   <span class="fu"><a href="bootstrap_provider.html">bootstrap_provider</a></span><span class="op">(</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="va"><a href="https://ggplot2.tidyverse.org/reference/diamonds.html" class="external-link">diamonds</a></span>, max_n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>   <span class="fu"><a href="model_function_provider.html">model_function_provider</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>     <span class="st">"Log reg"</span> <span class="op">=</span> <span class="fu">modelfitter</span><span class="fu">::</span><span class="va"><a href="logistic_regression.html">logistic_regression</a></span>,</span></span>
 <span class="r-in"><span>     <span class="st">"Poisson"</span> <span class="op">=</span> <span class="fu">modelfitter</span><span class="fu">::</span><span class="va"><a href="quasi_poisson.html">quasi_poisson</a></span></span></span>
 <span class="r-in"><span>   <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in formula_provider(`&lt;F` = I(color &lt; "F") ~ cut + carat + clarity +     price, `&lt;H` = I(color &lt; "H") ~ cut + carat + clarity + price):</span> could not find function "formula_provider"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">exectn</span> <span class="op">=</span> <span class="va">cfg</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="execute_configuration.html">execute_configuration</a></span><span class="op">(</span>cache <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'cfg' not found</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> using cached item: ~/.cache/modelfitter/cached-7ee20ca4c523103b2fe5534cbeca6990-8e527bf9579174643babc6f473d5732f.rda</span>
 <span class="r-in"><span><span class="va">summfit</span> <span class="op">=</span> <span class="va">exectn</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">summarise_fits</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'exectn' not found</span>
 <span class="r-in"><span> </span></span>
 <span class="r-in"><span><span class="co"># Simple example</span></span></span>
 <span class="r-in"><span><span class="va">tmp</span> <span class="op">=</span> <span class="fu"><a href="configure_model.html">configure_model</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="st">"Iris"</span>, <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">Species</span> <span class="op">==</span> <span class="st">"versicolor"</span><span class="op">)</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">iris</span>, <span class="va">logistic_regression</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">tmp2</span> <span class="op">=</span> <span class="va">tmp</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="execute_configuration.html">execute_configuration</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> caching item: ~/.cache/modelfitter/cached-863d9950a7be3e5055475c3a104cdcf4-49c5c43a94b1c2ec921e31249e7e2a58.rda</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> caching item: ~/.cache/modelfitter/cached-7ee20ca4c523103b2fe5534cbeca6990-81eb709f281fe75d1a492a891145bf7b.rda</span>
 <span class="r-in"><span><span class="va">summfit</span> <span class="op">=</span> <span class="va">tmp2</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">summarise_fits</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

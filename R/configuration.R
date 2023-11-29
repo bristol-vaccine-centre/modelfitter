@@ -77,11 +77,7 @@ configure_models = function(
     tmp_formula_base, tmp_formula_update
   )) %>% dplyr::mutate(
     model_formula = purrr::map2( tmp_formula_base, tmp_formula_update, ~ update(.x,.y)),
-    model_name = ifelse(
-      model_update_name != "default",
-      sprintf("%s (%s)",model_base_name, model_update_name),
-      model_base_name
-    ),
+    model_name = .generate_name(model_base_name, model_update_name, model_type_name)
   ) %>% dplyr::select(-tmp_formula_update, -tmp_formula_base)
   
   return(structure(
@@ -89,6 +85,17 @@ configure_models = function(
     bootstraps = tibble::tibble(boot = bootstrap_names),
     dataset_provider = dataset
   ))
+}
+
+.generate_name = function(model_base_name, model_update_name, model_type_name) {
+  model_name = model_base_name
+  if (length(unique(model_update_name)) > 1) {
+    model_name = sprintf("%s (%s)", model_name, model_update_name)
+  }
+  if (length(unique(model_type_name)) > 1) {
+    model_name = sprintf("%s\n%s", model_name, model_type_name)
+  }
+  return(model_name)
 }
 
 #' Configure a single model fit using the `modelfitter` framework

@@ -161,7 +161,9 @@ raw_data_provider = function(data, formulae = ~ .) {
 #' tmp2 = bp(1)
 #' identical(tmp,tmp2)
 bootstrap_provider = function(data, max_n, formulae = ~ .) {
-   
+  
+  if (is.provider(formulae)) formulae = .get_all(formulae)
+  
   vars = lapply(formulae, all.vars) %>% unlist() %>% unique()
   if (any(vars==".")) vars = colnames(data)
   
@@ -170,10 +172,13 @@ bootstrap_provider = function(data, max_n, formulae = ~ .) {
     vars = vars[vars %in% colnames(data)]
   }
   
-  if (is.provider(formulae)) formulae = .get_all(formulae)
   data2 = data %>% dplyr::select(dplyr::all_of(vars))
   
-  return(.prov(function(i) {
+  return(.dbpfn(data2, max_n))
+}
+
+.dbpfn = function(data, max_n) {
+  .prov(function(i) {
     if (rlang::is_missing(i)) return(1:max_n)
     if (max_n == 1) return(data)
     oldseed = try(.Random.seed, silent = TRUE)
@@ -181,7 +186,7 @@ bootstrap_provider = function(data, max_n, formulae = ~ .) {
     tmp = dplyr::sample_n(data, nrow(data),replace=TRUE)
     if (!inherits(oldseed,"try-error")) .Random.seed = oldseed
     return(tmp)
-  }))
+  })
 }
 
 #' Provide access to missing data imputations
@@ -264,14 +269,17 @@ data_subset_provider = function(...) {
       dplyr::mutate(dplyr::across(dplyr::where(is.factor), forcats::fct_drop))
   })
   
+  return(.dpfn(dots))
+  
+}
+
+.dpfn = function(dots) {
   return(.prov(function(name) {
     if (rlang::is_missing(name)) return(names(dots))
     tmp = .check_index(dots, name, "data_subset_provider")
     return(tmp)
   }))
-  
 }
-
 
 
 
@@ -299,6 +307,14 @@ print.provider = function(x,...) {
   return(structure(f,class = c("provider",class(f))))
 }
 
+.config_hash = function(conf) {
+  conf %>% 
+    # replace functions with body of functions.
+    dplyr::mutate(dplyr::across(dplyr::where(~ all(sapply(.x,is.function))), .fns = ~ lapply(.x,rlang::fn_body))) %>%
+    dplyr::mutate(dplyr::across(dplyr::where(~ all(sapply(.x, purrr::is_formula))), .fns = ~ lapply(.x,rlang::f_text))) %>% 
+    magrittr::set_attributes(NULL) %>%
+    digest::digest()
+}
 
 .check_index = function(lst, name, func_name) {
   if (is.numeric(name)) {

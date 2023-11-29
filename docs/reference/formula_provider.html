@@ -20,7 +20,7 @@ is a single set of predictors"><!-- mathjax --><script src="https://cdnjs.cloudf
     
     <a class="navbar-brand me-2" href="../index.html">modelfitter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9012</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9027</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,7 +82,6 @@ case this is a single formula, see examples for more possibilities.</p></dd>
 <span class="r-in"><span>  `Adj Model 1` <span class="op">=</span> <span class="va">form</span>,</span></span>
 <span class="r-in"><span>  `Adj Model 2` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">form</span>, <span class="va">.</span> <span class="op">~</span> <span class="va">.</span> <span class="op">-</span> <span class="va">clarity</span> <span class="op">*</span> <span class="va">price</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in formula_provider(Univariate = modelfitter::univariate_from_multivariate(form),     `Adj Model 1` = form, `Adj Model 2` = update(form, . ~ . -         clarity * price), ):</span> could not find function "formula_provider"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">predictors</span> <span class="op">=</span> <span class="op">~</span> <span class="va">x</span> <span class="op">+</span> <span class="va">y</span> <span class="op">+</span> <span class="va">z</span> </span></span>
@@ -91,29 +90,49 @@ case this is a single formula, see examples for more possibilities.</p></dd>
 <span class="r-in"><span>  `ICU admission` <span class="op">=</span> <span class="va">icu</span> <span class="op">~</span> <span class="va">.</span>,</span></span>
 <span class="r-in"><span>  `Delayed discharge` <span class="op">=</span> <span class="va">delayed_discharge</span> <span class="op">~</span> <span class="va">.</span>,</span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in formula_provider(Death = death ~ ., `ICU admission` = icu ~ .,     `Delayed discharge` = delayed_discharge ~ ., ):</span> could not find function "formula_provider"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fu">fp2</span><span class="op">(</span><span class="op">)</span>, <span class="va">fp2</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">update</span>, <span class="va">predictors</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'fp2' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Death</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> death ~ x + y + z</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55d29287bda0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $`ICU admission`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> icu ~ x + y + z</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55d29287bda0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $`Delayed discharge`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> delayed_discharge ~ x + y + z</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55d29287bda0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># the simplest configuration</span></span></span>
 <span class="r-in"><span><span class="va">fp3</span> <span class="op">=</span> <span class="fu">formula_provider</span><span class="op">(</span><span class="va">outcome</span> <span class="op">~</span> <span class="va">x</span> <span class="op">+</span> <span class="va">y</span> <span class="op">+</span> <span class="va">z</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in formula_provider(outcome ~ x + y + z):</span> could not find function "formula_provider"</span>
 <span class="r-in"><span><span class="fu">fp3</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fp3():</span> could not find function "fp3"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "default"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">fp4</span> <span class="op">=</span> <span class="fu">formula_provider</span><span class="op">(</span><span class="va">outcome1</span> <span class="op">~</span> <span class="va">x</span> <span class="op">+</span> <span class="va">y</span> <span class="op">+</span> <span class="va">z</span>, <span class="va">outcome2</span> <span class="op">~</span> <span class="va">x</span> <span class="op">+</span> <span class="va">y</span> <span class="op">+</span> <span class="va">z</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in formula_provider(outcome1 ~ x + y + z, outcome2 ~ x + y + z):</span> could not find function "formula_provider"</span>
 <span class="r-in"><span><span class="fu">fp4</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fp4():</span> could not find function "fp4"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "outcome1 ~ x + y + z" "outcome2 ~ x + y + z"</span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">fp4</span><span class="op">(</span><span class="st">"blah blah"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Error in fp4("blah blah") : could not find function "fp4"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Error : formula_provider: `blah blah` is not a known index of out: outcome1 ~ x + y + z, outcome2 ~ x + y + z</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># must define at least one forumula</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">formula_provider</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Error in formula_provider() : could not find function "formula_provider"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Error : you must supply a model formula.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">formula_provider</span><span class="op">(</span>default <span class="op">=</span> <span class="va">.</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in formula_provider(default = . ~ .):</span> could not find function "formula_provider"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function (name) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (rlang::is_missing(name)) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         return(names(dots))</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     tmp = .check_index(dots, name, "formula_provider")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (!inherits(tmp, "list")) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         tmp = list(tmp)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     return(tmp)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55d290382958&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55d290dc94a8&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "provider" "function"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

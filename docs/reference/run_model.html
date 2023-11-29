@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">modelfitter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9012</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9027</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,9 +92,9 @@ accept <code>data</code> and <code>formula</code> inputs and produce an output c
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># stats::lm( Petal.Length ~ Species + Petal.Width, iris)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">boots</span> <span class="op">=</span> <span class="va">iris</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">run_model</span><span class="op">(</span><span class="va">Petal.Length</span> <span class="op">~</span> <span class="va">Species</span> <span class="op">+</span> <span class="va">Petal.Width</span>, <span class="fu">stats</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in lifecycle::deprecate_soft("0.0.0.9011"):</span> argument "what" is missing, with no default</span>
+<span class="r-in"><span><span class="co"># boots = iris %&gt;% run_model(Petal.Length ~ Species + Petal.Width, stats::lm)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

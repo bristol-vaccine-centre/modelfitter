@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">modelfitter</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9012</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9027</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Format a confidence interval</h1>
-      <small class="dont-index">Source: <a href="https://github.com/bristol-vaccine-centre/modelfitter/blob/HEAD/R/execution.R" class="external-link"><code>R/execution.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bristol-vaccine-centre/modelfitter/blob/HEAD/R/format-output.R" class="external-link"><code>R/format-output.R</code></a></small>
       <div class="d-none name"><code>format_ci.Rd</code></div>
     </div>
 
@@ -91,7 +91,20 @@
 
 
 <dt>...</dt>
-<dd><p>passed to <code>fn</code> as additional parameters (see <code><a href="format_ratio.html">format_ratio()</a></code> for the defaults)</p></dd>
+<dd><p>Arguments passed on to <code><a href="format_ratio.html">format_ratio</a></code></p><dl><dt><code>x</code></dt>
+<dd><p>a vector of numbers</p></dd>
+
+    <dt><code>fmt.ratio</code></dt>
+<dd><p>a sprintf format string</p></dd>
+
+    <dt><code>max.ratio</code></dt>
+<dd><p>a max ratio after which to display as e.g. <code>&gt;50</code> or <code>&lt;0.02</code></p></dd>
+
+    <dt><code>na.ratio</code></dt>
+<dd><p>a symbol in case the value is <code>NA</code>.</p></dd>
+
+  
+</dl></dd>
 
 </dl></div>
     <div class="section level2">

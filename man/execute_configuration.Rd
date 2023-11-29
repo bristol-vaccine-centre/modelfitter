@@ -69,7 +69,7 @@ tmp3  = configure_models(
       "<F" = I(color < "F") ~ cut + carat + clarity + price,
       "<H" = I(color < "H") ~ cut + carat + clarity + price
    ),
-   bootstrap_provider(ggplot2::diamonds, max_n = 100),
+   bootstrap_provider(ggplot2::diamonds, max_n = 10),
    model_function_provider(
      "Log reg" = modelfitter::logistic_regression,
      "Poisson" = modelfitter::quasi_poisson

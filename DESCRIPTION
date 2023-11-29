@@ -1,6 +1,6 @@
 Package: modelfitter
 Title: Bootstrapping models and model fits
-Version: 0.0.0.9024
+Version: 0.0.0.9027
 Authors@R: 
     person(given = "Robert",
            family = "Challen",
