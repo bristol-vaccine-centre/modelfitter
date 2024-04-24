@@ -46,7 +46,7 @@ univariate_from_multivariate = function(formula) {
   tmp = stats::terms(formula)
   rhs = rlang::f_rhs(formula) %>% all.vars()
   lhs = rlang::f_lhs(formula) %>% format()
-  if (!is.null(lhs)) {
+  if (lhs != "NULL") {
     lapply(rhs, function(x) stats::as.formula(sprintf("%s ~ `%s`",lhs,x)))
   } else {
     lhs = rhs[[1]]

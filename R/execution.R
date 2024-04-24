@@ -72,7 +72,9 @@ execute_configuration = function(cfg, retain_fit = sum(cfg$n_boots)<50, performa
         fit = purrr::map(boot, function(.x, ...) {
           data = data_prov(.x) %>% dplyr::ungroup() %>% data_subset_fn()
           cli::cli_progress_update(id = pid) #.envir = env)
-          return(data %>% model_fn(model_formula, !!!dots))
+          tmp = try( data %>% model_fn(model_formula, !!!dots), silent= TRUE)
+          if (inherits(tmp,"try-error")) browser()
+          return(tmp)
         
         })
       )
@@ -80,7 +82,7 @@ execute_configuration = function(cfg, retain_fit = sum(cfg$n_boots)<50, performa
       # summarise results for each boot
       tmp = tmp %>% dplyr::mutate(
         coef = purrr::map(fit, ~ suppressWarnings(broom::tidy(.x))),
-        n_obs = purrr::map(fit, stats::nobs)
+        n_obs = purrr::map(fit, ~ tryCatch(stats::nobs(.x), error=function(e) NA))
       )
       
       # global_p_values

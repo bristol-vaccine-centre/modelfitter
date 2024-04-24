@@ -1,6 +1,6 @@
 Package: modelfitter
 Title: Bootstrapping models and model fits
-Version: 0.0.0.9027
+Version: 0.0.0.9029
 Authors@R: 
     person(given = "Robert",
            family = "Challen",
@@ -51,5 +51,5 @@ Imports:
 Remotes: github::bristol-vaccine-centre/tableone
 Suggests: 
     tidyverse,
-    tableone
+    tableone (>= 0.4.3)
 URL: https://github.com/bristol-vaccine-centre/modelfitter
