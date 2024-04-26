@@ -1,6 +1,6 @@
 Package: modelfitter
 Title: Bootstrapping models and model fits
-Version: 0.0.0.9029
+Version: 0.0.0.9030
 Authors@R: 
     person(given = "Robert",
            family = "Challen",
@@ -11,7 +11,7 @@ Description: This is a very early work in progress.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Imports: 
     dplyr,
     emmeans,
@@ -48,8 +48,7 @@ Imports:
     elrm,
     forcats,
     glue
-Remotes: github::bristol-vaccine-centre/tableone
-Suggests: 
-    tidyverse,
+Suggests:
     tableone (>= 0.4.3)
+Remotes: bristol-vaccine-centre/tableone
 URL: https://github.com/bristol-vaccine-centre/modelfitter

@@ -21,7 +21,6 @@ A variant of sprintf that work well with inputs that are in the format of a list
 Good examples of which are the quantile functions
 }
 \examples{
-library(tidyverse)
 # generate a mixture confidence interval from a set of distributions
 sprintf_list("\%1.2f [\%1.2f\u2013\%1.2f]",
  qmixnorm(p=c(0.5,0.025,0.975),

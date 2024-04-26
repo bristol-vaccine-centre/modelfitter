@@ -293,12 +293,14 @@ is.provider = function(x,...) {
   inherits(x,"provider")
 }
 
+#' @export
 format.provider = function(x, ...) {
   tmp = x()
   if (is.numeric(tmp)) return(sprintf("range: 1..%d", max(tmp)))
   return(paste0("`",tmp,"`",collapse=", "))
 }
 
+#' @export
 print.provider = function(x,...) {
   cat(format.provider(x))
 }
