@@ -47,8 +47,10 @@ format_summary_rows = function(rawData, ..., label_fn = ~ .x) {
     rawData = dplyr::bind_rows(rawData)
   }
   
+  .use_tableone_defaults()
+  
   predictorNames = sapply(predictorVars, rlang::as_label)
-  label_fn = getOption("tableone.labeller",label_fn)
+  label_fn = getOption("modelfitter.labeller",label_fn)
   label_fn = purrr::as_mapper(label_fn)
   
   # Get the labels as a dataframe, and ensure the ordering of factors is preserved
@@ -509,12 +511,6 @@ analyse_performance = function(boots, statistics = c("AIC","BIC","R2_Tjur","R2_N
   
   pooled.performance = .pool_performance(boots, statistics)
 }
-
-
-
-
-# devtools::load_all("~/Git/tableone")
-# devtools::load_all("~/Git/modelfitter")
 
 #' Forest plot from a set of bootstrapped models
 #' 

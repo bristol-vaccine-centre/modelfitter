@@ -35,7 +35,10 @@ cox_model = function(data, formula, ...) {
 #' diamonds3 = ggplot2::diamonds %>% dplyr::mutate(
 #'   is_coloured = color <= "F",
 #'   cut = factor(cut,ordered=FALSE),
-#'   price_cat = tableone::cut_integer(price, c(500,1000,2000,4000))
+#'   price_cat = cut(price, 
+#'       breaks = c(0,500,1000,2000,4000,Inf),
+#'       labels = c("<500","500-999","1000-1999","2000-3999","4000+"),
+#'       ordered_result = TRUE)
 #' ) %>% dplyr::select(-color)
 #' 
 #' model5 = diamonds3 %>% 
@@ -69,7 +72,10 @@ logistic_regression_ordered = function(data, formula, positive=c("yes","true","p
 #' diamonds3 = ggplot2::diamonds %>% dplyr::mutate(
 #'   is_coloured = color <= "F",
 #'   cut = factor(cut,ordered=FALSE),
-#'   price_cat = tableone::cut_integer(price, c(500,1000,2000,4000))
+#'   price_cat = cut(price, 
+#'       breaks = c(0,500,1000,2000,4000,Inf),
+#'       labels = c("<500","500-999","1000-1999","2000-3999","4000+"),
+#'       ordered_result = TRUE)
 #' ) %>% dplyr::select(-color)
 #' 
 #' model5 = diamonds3 %>% 
@@ -141,7 +147,10 @@ exact_logistic_regression = function(data, formula, positive=c("yes","true","pre
 #' diamonds3 = ggplot2::diamonds %>% dplyr::mutate(
 #'   is_coloured = color <= "F",
 #'   cut = factor(cut,ordered=FALSE),
-#'   price_cat = tableone::cut_integer(price, c(500,1000,2000,4000))
+#'   price_cat = cut(price, 
+#'       breaks = c(0,500,1000,2000,4000,Inf),
+#'       labels = c("<500","500-999","1000-1999","2000-3999","4000+"),
+#'       ordered_result = TRUE)
 #' ) %>% dplyr::select(-color)
 #' 
 #' model5 = diamonds3 %>% log_binomial(is_coloured ~ cut + carat + clarity * price)
@@ -183,7 +192,10 @@ log_binomial = function(data, formula,  positive=c("yes","true","present","confi
 #' diamonds3 = ggplot2::diamonds %>% dplyr::mutate(
 #'   is_coloured = color <= "F",
 #'   cut = factor(cut,ordered=FALSE),
-#'   price_cat = tableone::cut_integer(price, c(500,1000,2000,4000))
+#'   price_cat = cut(price, 
+#'       breaks = c(0,500,1000,2000,4000,Inf),
+#'       labels = c("<500","500-999","1000-1999","2000-3999","4000+"),
+#'       ordered_result = TRUE)
 #' ) %>% dplyr::select(-color)
 #' 
 #' model5 = diamonds3 %>% log_binomial_2(is_coloured ~ cut + carat + clarity + price)
@@ -223,7 +235,10 @@ log_binomial_2 = function(data, formula,  positive=c("yes","true","present","con
 #' diamonds3 = ggplot2::diamonds %>% dplyr::mutate(
 #'   is_coloured = color <= "F",
 #'   cut = factor(cut,ordered=FALSE),
-#'   price_cat = tableone::cut_integer(price, c(500,1000,2000,4000))
+#'   price_cat = cut(price, 
+#'       breaks = c(0,500,1000,2000,4000,Inf),
+#'       labels = c("<500","500-999","1000-1999","2000-3999","4000+"),
+#'       ordered_result = TRUE)
 #' ) %>% dplyr::select(-color)
 #' 
 #' model5 = diamonds3 %>% quasi_poisson(is_coloured ~ cut + carat + clarity + price)
@@ -257,7 +272,10 @@ quasi_poisson = function(data, formula,  positive=c("yes","true","present","conf
 #' diamonds3 = ggplot2::diamonds %>% dplyr::mutate(
 #'   is_coloured = color <= "F",
 #'   cut = factor(cut,ordered=FALSE),
-#'   price_cat = tableone::cut_integer(price, c(500,1000,2000,4000))
+#'   price_cat = cut(price, 
+#'       breaks = c(0,500,1000,2000,4000,Inf),
+#'       labels = c("<500","500-999","1000-1999","2000-3999","4000+"),
+#'       ordered_result = TRUE)
 #' ) %>% dplyr::select(-color)
 #' 
 #' model5 = diamonds3 %>% quasi_poisson_ordered(is_coloured ~ cut + carat + clarity + price)
@@ -292,7 +310,10 @@ quasi_poisson_ordered = function(data, formula,  positive=c("yes","true","presen
 #' diamonds3 = ggplot2::diamonds %>% dplyr::mutate(
 #'   is_coloured = color <= "F",
 #'   cut = factor(cut,ordered=FALSE),
-#'   price_cat = tableone::cut_integer(price, c(500,1000,2000,4000))
+#'   price_cat = cut(price, 
+#'       breaks = c(0,500,1000,2000,4000,Inf),
+#'       labels = c("<500","500-999","1000-1999","2000-3999","4000+"),
+#'       ordered_result = TRUE)
 #' ) %>% dplyr::select(-color)
 #' 
 #' model5 = diamonds3 %>% robust_poisson(is_coloured ~ cut + carat + clarity + price)
@@ -322,7 +343,10 @@ robust_poisson = function(data, formula,  positive=c("yes","true","present","con
 #' diamonds3 = ggplot2::diamonds %>% dplyr::mutate(
 #'   is_coloured = color <= "F",
 #'   cut = factor(cut,ordered=FALSE),
-#'   price_cat = tableone::cut_integer(price, c(500,1000,2000,4000))
+#'   price_cat = cut(price, 
+#'       breaks = c(0,500,1000,2000,4000,Inf),
+#'       labels = c("<500","500-999","1000-1999","2000-3999","4000+"),
+#'       ordered_result = TRUE)
 #' ) %>% dplyr::select(-color)
 #' 
 #' model5 = diamonds3 %>% robust_poisson_2(is_coloured ~ cut + carat + clarity + price)

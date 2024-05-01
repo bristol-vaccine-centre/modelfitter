@@ -1,6 +1,6 @@
 Package: modelfitter
 Title: Bootstrapping models and model fits
-Version: 0.0.0.9030
+Version: 0.0.0.9031
 Authors@R: 
     person(given = "Robert",
            family = "Challen",
@@ -48,7 +48,4 @@ Imports:
     elrm,
     forcats,
     glue
-Suggests:
-    tableone (>= 0.4.3)
-Remotes: bristol-vaccine-centre/tableone
 URL: https://github.com/bristol-vaccine-centre/modelfitter
