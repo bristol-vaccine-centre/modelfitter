@@ -10,6 +10,7 @@
 #    - stringr
 #    - fs
 #    - dplyr
+#    - httr
 # ---
 
 # 2025-09-19: switched to rlang::hash - will probably invalidate existing caches

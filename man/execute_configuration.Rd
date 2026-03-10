@@ -30,17 +30,17 @@ will be summarised over bootstrap replicates. Setting this to false may
 be a good idea if you have lots of models.}
 
 \item{...}{
-  Arguments passed on to \code{\link[=model_labels]{model_labels}}
-  \describe{
+  Named arguments passed on to \code{\link[=model_labels]{model_labels}}\describe{
     \item{\code{model}}{a model or list of models.}
-    \item{\code{label_fn}}{a function that allows a predictor label to be renamed. This
+\item{\code{label_fn}}{a function that allows a predictor label to be renamed. This
 should expect a vector and return a vector of the same length. Levels will be
 terms in the model function and may be column names, or combinations thereof}
-    \item{\code{subgroup_label_fn}}{a function that allows a subgroup label to be renamed. This
+\item{\code{subgroup_label_fn}}{a function that allows a subgroup label to be renamed. This
 should expect a vector and return a vector of the same length. The
 input to this function will be either a factor level name or a combination
 of them or whatever else the model decides to name it's coefficients.}
-  }}
+\item{\code{...}}{not used}
+}}
 
 \item{cache}{cache model output}
 }

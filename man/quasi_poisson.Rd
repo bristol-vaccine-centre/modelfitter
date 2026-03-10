@@ -34,7 +34,10 @@ where true is 1 and false is 0.
 diamonds3 = ggplot2::diamonds \%>\% dplyr::mutate(
   is_coloured = color <= "F",
   cut = factor(cut,ordered=FALSE),
-  price_cat = tableone::cut_integer(price, c(500,1000,2000,4000))
+  price_cat = cut(price, 
+      breaks = c(0,500,1000,2000,4000,Inf),
+      labels = c("<500","500-999","1000-1999","2000-3999","4000+"),
+      ordered_result = TRUE)
 ) \%>\% dplyr::select(-color)
 
 model5 = diamonds3 \%>\% quasi_poisson(is_coloured ~ cut + carat + clarity + price)

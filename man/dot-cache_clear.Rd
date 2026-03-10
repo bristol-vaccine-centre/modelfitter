@@ -4,18 +4,19 @@
 \alias{.cache_clear}
 \title{Clear data from the passthrough cache for complex or long running operations}
 \usage{
-.cache_clear(
-  .cache = rappdirs::user_cache_dir(utils::packageName()),
-  .prefix = ".*",
-  interactive = TRUE
-)
+.cache_clear(.cache = .cache_loc(), .prefix = ".*", interactive = TRUE)
 }
 \arguments{
-\item{.cache}{the location of the cache as a directory. May get its value from options("ggrrr.cache.dir") or the default value of rappdirs::user_cache_dir("ggrrr")}
+\item{.cache}{the location of the cache as a directory. May get its value
+from \code{getOption("cache.path")} or the default value which is
+\verb{rappdirs::user_cache_dir(<package_name>)}}
 
-\item{.prefix}{a regular expression matching the prefix of the cached item, so that do selective clean up operations. defaults to everything.}
+\item{.prefix}{(optional) a name of the operation so that you can namespace
+the cached files and do selective clean up operations on them with
+.cache_clear()}
 
-\item{interactive}{suppress \verb{are you sure?} warning with a FALSE value (defaults to TRUE)}
+\item{interactive}{suppress \verb{are you sure?} warning with a FALSE value
+(defaults to TRUE)}
 }
 \value{
 nothing. called for side effects
@@ -23,4 +24,5 @@ nothing. called for side effects
 \description{
 Clear data from the passthrough cache for complex or long running operations
 }
+\concept{cache}
 \keyword{internal}

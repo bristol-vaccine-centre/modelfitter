@@ -1,0 +1,69 @@
+# Convert a dataframe to a huxtable with nested rows and columns.
+
+The assumption here is that the input data is a long format tidy
+dataframe with both rows and columns specified by values of the
+`rowGroupVars` and `colGroupVars` columns. The long format (sparse)
+table is translated into a nested tree of rows (using `rowGroupVars`)
+and a nested tree of columns (from `colGroupVars`). Individual data
+items are placed in the cell intersecting these two trees. If there are
+multiple matches an additional layer of grouping is added to the
+columns.
+
+## Usage
+
+``` r
+.hux_tidy(
+  tidyDf,
+  rowGroupVars,
+  colGroupVars,
+  missing = "—",
+  na = "—",
+  displayRedundantColumnNames = FALSE,
+  ...
+)
+```
+
+## Arguments
+
+- tidyDf:
+
+  A dataframe with row groupings (as a set of columns) and column
+  groupings (as a set of columns) and data, where the data is in a tidy
+  format with a row per "cell" or cell group.
+
+- rowGroupVars:
+
+  A dplyr::vars(...) column specification which will define how rows are
+  grouped
+
+- colGroupVars:
+
+  A dplyr::vars(...) column specification with defines how columns will
+  be grouped
+
+- missing:
+
+  If there is no content for a given rowGroup / colGroup combination
+  then this character will be used as a placeholder
+
+- na:
+
+  If there are NA contents then this character will be used.
+
+- displayRedundantColumnNames:
+
+  if there is one column per column group the name of that column may be
+  irrelevant (e.g. if there is a `col_name`, `value` fully tidy format)
+  and `col_name` is in the `colGroupVars` list then the name of the
+  column `value` is redundant and not displayed by default. However
+  sometimes you want to display this if you have named it as something
+  specific e.g. including the units. If there is more than one column
+  per `colGroup` the column titles are needed and kept.
+
+- ...:
+
+  passed to `hux_default_layout()`
+
+## Value
+
+a huxtable table

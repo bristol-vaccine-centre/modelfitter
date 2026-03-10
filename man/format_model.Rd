@@ -15,36 +15,47 @@ format_model(model_name, fit, statistic, ...)
 This mostly defines the label in the table.}
 
 \item{...}{
-  Arguments passed on to \code{\link[=format_summary]{format_summary}}
-  \describe{
+  Named arguments passed on to \code{\link[=format_summary]{format_summary}}\describe{
     \item{\code{summfit}}{A set of fitted, and summarised configured models}
-    \item{\code{global.p}}{present the global p value (anova III) rather than the line by line values.}
-    \item{\code{inv_link}}{the inverse of the link function employed in the models. This is
+\item{\code{global.p}}{present the global p value (anova III) rather than the line by line values.}
+\item{\code{inv_link}}{the inverse of the link function employed in the models. This is
 almost always the inverse \code{exp(...)} unless we are dealing with a linear model.}
-    \item{\code{col_header}}{a glue spec using columns from the summfit data table to label the model columns.
+\item{\code{col_header}}{a glue spec using columns from the summfit data table to label the model columns.
 \code{model_name} and \code{n_obs_summary} should be defined as a minimum. Other bits
 of metadata will be present if the table has been configured using
 \code{configure_models(...)} including \code{model_type_name}, \code{data_subset_name},
 \code{model_base_name}, \code{model_update_name}, \code{n_boots}.}
-    \item{\code{row_design}}{a glue spec for presenting the statistic. valid columns are
+\item{\code{row_design}}{a glue spec for presenting the statistic. valid columns are
 \code{reference} - the referent status, \code{group.type}, \code{beta.lower},
 \code{beta.median}, \code{beta.upper}, \code{value.lower},
 \code{value.median}, \code{value.upper}, \code{p.value.mixture}, \code{global.p.mixture},
 \code{global.p.method}. The helper functions \code{format_ratio(x,fmt.ratio = "\%1.3g")} and \code{format_ci(med,low,hi,ref)}
 may be useful in this glue string}
-    \item{\code{p_format}}{a function (or lambda) converting a number into a p-value string}
-    \item{\code{font_size}}{(optional) the font size for the table in points}
-    \item{\code{font}}{(optional) the font family for the table (which will be matched to
+\item{\code{p_format}}{a function (or lambda) converting a number into a p-value string}
+\item{\code{font_size}}{(optional) the font size for the table in points}
+\item{\code{font}}{(optional) the font family for the table (which will be matched to
 closest on your system)}
-    \item{\code{footer_text}}{any text that needs to be added at the end of the table,
+\item{\code{footer_text}}{any text that needs to be added at the end of the table,
 setting this to FALSE dsables the whole footer (as does
 \code{options("tableone.hide_footer"=TRUE)}).}
-    \item{\code{summarise_fn}}{in the event that we want to present multiple models in
+\item{\code{summarise_fn}}{in the event that we want to present multiple models in
 the same column of a table it is possible that there are multiple entries
 for each variable. This function will combine them (at a text level) so they
 can be placed in a table. Examples could be \code{dplyr::first} or
 \code{~ paste0(.x,collapse="\\n")}}
-  }}
+\item{\code{...}}{
+  Named arguments passed on to \code{\link[=model_labels]{model_labels}}\describe{
+    \item{\code{model}}{a model or list of models.}
+\item{\code{label_fn}}{a function that allows a predictor label to be renamed. This
+should expect a vector and return a vector of the same length. Levels will be
+terms in the model function and may be column names, or combinations thereof}
+\item{\code{subgroup_label_fn}}{a function that allows a subgroup label to be renamed. This
+should expect a vector and return a vector of the same length. The
+input to this function will be either a factor level name or a combination
+of them or whatever else the model decides to name it's coefficients.}
+\item{\code{...}}{not used}
+}}
+}}
 }
 \value{
 a huxtable formatted model summary table

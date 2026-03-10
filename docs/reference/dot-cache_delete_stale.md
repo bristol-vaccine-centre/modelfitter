@@ -1,0 +1,36 @@
+# Delete stale files in a cache
+
+Staleness is determined by the number of days from 2am on the current
+day in the current time-zone. A item cached for only one day becomes
+stale at 2am the day after it is cached. The time is configurable and
+option(cache.time_day_starts = 0) would be midnight. Automated analysis
+using caches and updated data should ensure that analysis does not cross
+this time point otherwise it may end up using old data.
+
+## Usage
+
+``` r
+.cache_delete_stale(.cache = .cache_loc(), .prefix = ".*", .stale = Inf)
+```
+
+## Arguments
+
+- .cache:
+
+  the location of the cache as a directory. May get its value from
+  `getOption("cache.path")` or the default value which is
+  `rappdirs::user_cache_dir(<package_name>)`
+
+- .prefix:
+
+  (optional) a name of the operation so that you can namespace the
+  cached files and do selective clean up operations on them with
+  .cache_clear()
+
+- .stale:
+
+  the length of time in days before considering cached data as stale.
+
+## Value
+
+nothing. called for side effects.

@@ -1,0 +1,63 @@
+# Summarise a modelfitter execution
+
+A `modelfitter` execution may consist of multiple models, multiple data
+sets, and multiple bootstraps of data or imputations of data. This
+summarises the coefficients, global p values and performance metrics of
+each model fit over the multiple data bootstraps to get to a single set
+of coefficients, and metrics for each different model.
+
+## Usage
+
+``` r
+summarise_fits(exectn, ...)
+```
+
+## Arguments
+
+- exectn:
+
+  a modelfitter execution of multiple model fits.
+
+- ...:
+
+  not used at present
+
+## Value
+
+a nested dataframe with a single row per model and summary columns in
+`coef_summary`, `global_p_summary` and
+
+## Details
+
+Coefficients are combined assuming normally distributed beta
+coefficients, prior to link function inversion, as mixtures of normal
+distributions and 95% confidence intervals calculated. performance
+metrics and global p values are given as means of the values of
+bootstrap.
+
+## Examples
+
+``` r
+# Complex example, multiple statsistical models, multiple formulae,
+# bootstrapped data.
+cfg  = configure_models(
+   formula_provider(
+      "<F" = I(color < "F") ~ cut + carat + clarity + price,
+      "<H" = I(color < "H") ~ cut + carat + clarity + price
+   ),
+   bootstrap_provider(ggplot2::diamonds, max_n = 10),
+   model_function_provider(
+     "Log reg" = modelfitter::logistic_regression,
+     "Poisson" = modelfitter::quasi_poisson
+   )
+)
+
+exectn = cfg %>% execute_configuration(cache = TRUE)
+summfit = exectn %>% summarise_fits()
+ 
+# Simple example
+tmp = configure_model(
+  "Iris", I(Species == "versicolor") ~ ., iris, logistic_regression)
+tmp2 = tmp %>% execute_configuration()
+summfit = tmp2 %>% summarise_fits()
+```

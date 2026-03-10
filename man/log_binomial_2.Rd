@@ -32,7 +32,10 @@ It does not seem to report std error. This is very much a work in progress,
 diamonds3 = ggplot2::diamonds \%>\% dplyr::mutate(
   is_coloured = color <= "F",
   cut = factor(cut,ordered=FALSE),
-  price_cat = tableone::cut_integer(price, c(500,1000,2000,4000))
+  price_cat = cut(price, 
+      breaks = c(0,500,1000,2000,4000,Inf),
+      labels = c("<500","500-999","1000-1999","2000-3999","4000+"),
+      ordered_result = TRUE)
 ) \%>\% dplyr::select(-color)
 
 model5 = diamonds3 \%>\% log_binomial_2(is_coloured ~ cut + carat + clarity + price)

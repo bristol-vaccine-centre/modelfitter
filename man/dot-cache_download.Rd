@@ -8,7 +8,7 @@
   url,
   ...,
   .nocache = getOption("cache.disable", default = FALSE),
-  .cache = rappdirs::user_cache_dir(utils::packageName()),
+  .cache = .cache_loc(),
   .stale = Inf,
   .extn = NULL
 )
@@ -17,11 +17,7 @@
 \item{url}{the url to download}
 
 \item{...}{
-  Arguments passed on to \code{\link[utils:download.file]{utils::download.file}}
-  \describe{
-    \item{\code{destfile}}{a character string (or vector, see the \code{url}
-    argument) with the file path where the downloaded file is to be
-    saved.  Tilde-expansion is performed.}
+  Named arguments passed on to \code{\link[utils:download.file]{utils::download.file}}\describe{
     \item{\code{method}}{Method to be used for downloading files.  Current
     download methods are \code{"internal"}, \code{"libcurl"},
     \code{"wget"}, \code{"curl"} and \code{"wininet"} (Windows
@@ -31,27 +27,32 @@
     The method can also be set through the option
     \code{"download.file.method"}: see \code{\link{options}()}.
   }
-    \item{\code{quiet}}{If \code{TRUE}, suppress status messages (if any), and
+\item{\code{quiet}}{If \code{TRUE}, suppress status messages (if any), and
     the progress bar.}
-    \item{\code{mode}}{character.  The mode with which to write the file.  Useful
+\item{\code{mode}}{character.  The mode with which to write the file.  Useful
     values are \code{"w"}, \code{"wb"} (binary), \code{"a"} (append) and
     \code{"ab"}.  Not used for methods \code{"wget"} and \code{"curl"}.
     See also \sQuote{Details}, notably about using \code{"wb"} for Windows.
   }
-    \item{\code{cacheOK}}{logical.  Is a server-side cached value acceptable?}
-    \item{\code{extra}}{character vector of additional command-line arguments for
+\item{\code{cacheOK}}{logical.  Is a server-side cached value acceptable?}
+\item{\code{extra}}{character vector of additional command-line arguments for
     the \code{"wget"} and \code{"curl"} methods.}
-    \item{\code{headers}}{named character vector of additional HTTP headers to
+\item{\code{headers}}{named character vector of additional HTTP headers to
     use in HTTP[S] requests.  It is ignored for non-HTTP[S] URLs.  The
     \code{User-Agent} header taken from the \code{HTTPUserAgent} option
     (see \code{\link{options}}) is automatically used as the first header.}
-  }}
+\item{\code{...}}{allow additional arguments to be passed, unused.}
+}}
 
-\item{.nocache}{if set to TRUE all caching is disabled}
+\item{.nocache}{an option to defeat the cacheing which can be set globally as
+\code{options("cache.disable"=TRUE)}}
 
-\item{.cache}{the location of the downloaded files}
+\item{.cache}{the location of the cache as a directory. May get its value
+from \code{getOption("cache.path")} or the default value which is
+\verb{rappdirs::user_cache_dir(<package_name>)}}
 
-\item{.stale}{how long to leave this file before replacing it.}
+\item{.stale}{the length of time in days before considering cached data as
+stale.}
 
 \item{.extn}{the file name extension}
 }
@@ -62,4 +63,5 @@ the path to the downloaded file
 This function copies a remote file to a local cache once and
 makes sure it is reused.
 }
+\concept{cache}
 \keyword{internal}
